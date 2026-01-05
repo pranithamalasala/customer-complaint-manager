@@ -27,3 +27,17 @@ A robust, full-stack web application designed to digitize and streamline the com
 3. **Admin** logs in to view pending tickets.
 4. **Admin** updates the status (e.g., "Resolved").
 5. **Database** updates the user's view instantly.
+---
+
+## 📅 Development Log
+
+### **Day 1: Setup & Foundation**
+* Initialized the Flask project structure.
+* configured the SQLite database connection.
+* Created the basic routing for Home and Login pages.
+
+### **Day 2: Authentication & UI Design** (Current)
+* **Security:** Implemented User Registration and Login using `Flask-Login`.
+* **Database:** Built the `User` model to store credentials securely.
+* **UI/UX:** Added a custom "Glassmorphism" design (CSS) and responsive layouts.
+* **Bug Fixes:** Resolved session management issues.
