@@ -3,19 +3,58 @@
 {% block content %}
 <div class="container mt-5">
     <div class="row">
-        <div class="col-md-12 text-center">
+        <div class="col-md-12">
             <h2 class="text-white mb-4">Welcome, {{ name }}! 👋</h2>
             
-            <div class="card p-5">
-                <h4>Customer Dashboard</h4>
-                <p class="text-muted">Manage your complaints and view status updates.</p>
-                
-                <hr>
-
-                <a href="{{ url_for('file_complaint') }}" class="btn btn-primary btn-lg">
-                    📝 File a New Complaint
-                </a>
+            <div class="card p-4 mb-4">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h4>Customer Dashboard</h4>
+                        <p class="text-muted mb-0">Manage your complaints and view status updates.</p>
+                    </div>
+                    <a href="{{ url_for('file_complaint') }}" class="btn btn-primary btn-lg">
+                        📝 File New Complaint
+                    </a>
+                </div>
             </div>
+
+            <div class="card p-4">
+                <h4>📜 Your Complaint History</h4>
+                
+                {% if complaints %}
+                <table class="table table-hover mt-3">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Subject</th>
+                            <th>Category</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for complaint in complaints %}
+                        <tr>
+                            <td>#{{ complaint.id }}</td>
+                            <td>{{ complaint.subject }}</td>
+                            <td><span class="badge bg-secondary">{{ complaint.category }}</span></td>
+                            <td>
+                                {% if complaint.status == 'Pending' %}
+                                    <span class="badge bg-warning text-dark">Pending</span>
+                                {% else %}
+                                    <span class="badge bg-success">Resolved</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                    <div class="alert alert-info mt-3">
+                        You haven't filed any complaints yet.
+                    </div>
+                {% endif %}
+            </div>
+
         </div>
     </div>
 </div>

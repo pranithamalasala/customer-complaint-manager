@@ -48,12 +48,14 @@ def login():
             return redirect(url_for('dashboard'))
         flash('Invalid Credentials')
     return render_template('login.html')
-
 @app.route('/dashboard')
 @login_required
 def dashboard():
-    # Pass the user's name to the dashboard
-    return render_template('dashboard.html', name=current_user.username)
+    # 1. Fetch all complaints filed by the current user
+    user_complaints = Complaint.query.filter_by(user_id=current_user.id).all()
+    
+    # 2. Send the list to the HTML page
+    return render_template('dashboard.html', name=current_user.username, complaints=user_complaints)
 
 @app.route('/logout')
 @login_required
