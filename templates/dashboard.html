@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <h2 class="text-white mb-4">Welcome, {{ name }}! 👋</h2>
+            
+            <div class="card p-5">
+                <h4>Customer Dashboard</h4>
+                <p class="text-muted">Manage your complaints and view status updates.</p>
+                
+                <hr>
+
+                <a href="{{ url_for('file_complaint') }}" class="btn btn-primary btn-lg">
+                    📝 File a New Complaint
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
