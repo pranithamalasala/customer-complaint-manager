@@ -1,35 +1,46 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="row justify-content-center mt-5">
-    <div class="col-md-4">
-        <div class="card shadow">
-            <div class="card-header bg-primary text-white text-center">
-                <h4>Login</h4>
-            </div>
-            <div class="card-body">
-                {% with messages = get_flashed_messages() %}
-                    {% if messages %}
-                        <div class="alert alert-danger">{{ messages[0] }}</div>
-                    {% endif %}
-                {% endwith %}
+<div class="login-container">
+    
+    <div class="login-left">
+        <div class="brand-logo-top">
+            <span style="background: linear-gradient(to right, #F97316, #3B82F6); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">&lt;/&gt;</span> 
+            <span>Infomatic Labs</span>
+        </div>
 
-                <form action="/login" method="POST">
-                    <div class="mb-3">
-                        <label>Username</label>
-                        <input type="text" name="username" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label>Password</label>
-                        <input type="password" name="password" class="form-control" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary w-100">Enter System</button>
-                </form>
-                <div class="text-center mt-3">
-    <p>Don't have an account? <a href="/register">Sign Up Here</a></p>
-</div>
+        <div class="hero-text">
+            <div class="hero-title">
+                Employee <br>
+                <span class="text-gradient">Support Desk.</span>
             </div>
+            <p class="hero-subtitle">
+                We build smart software that powers businesses. <br>
+                Log in to manage your requests efficiently.
+            </p>
         </div>
     </div>
+
+    <div class="login-right">
+        <div class="login-box">
+            <h2>Welcome Back</h2>
+            <p style="color: #94A3B8; margin-bottom: 30px;">Enter your credentials to access the portal.</p>
+
+            <form method="POST">
+                <label>Email Address</label>
+                <input type="text" name="username" class="form-control" placeholder="name@infomatic.com" required>
+
+                <label>Password</label>
+                <input type="password" name="password" class="form-control" placeholder="••••••••" required>
+
+                <button type="submit" class="btn-login">Sign In →</button>
+            </form>
+            
+            <p style="margin-top: 25px; text-align: center; color: #64748B; font-size: 0.9rem;">
+                New employee? <a href="{{ url_for('register') }}">Create Account</a>
+            </p>
+        </div>
+    </div>
+
 </div>
 {% endblock %}

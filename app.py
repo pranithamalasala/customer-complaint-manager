@@ -17,10 +17,15 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 # --- ROUTES ---
+# In app.py
 
 @app.route('/')
 def home():
-    return render_template('base.html')
+    # If the user is already logged in, go to dashboard
+    if current_user.is_authenticated:
+        return redirect(url_for('dashboard'))
+    # If not, go straight to the beautiful Login page
+    return redirect(url_for('login'))
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
