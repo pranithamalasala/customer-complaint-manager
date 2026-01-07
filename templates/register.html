@@ -1,29 +1,45 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="row justify-content-center mt-5">
-    <div class="col-md-4">
-        <div class="card shadow">
-            <div class="card-header bg-success text-white text-center">
-                <h4>Create Account</h4>
+<div class="login-container">
+    
+    <div class="login-left">
+        <div class="brand-logo-top">
+            <span style="background: linear-gradient(to right, #F97316, #3B82F6); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">&lt;/&gt;</span> 
+            <span>Infomatic Labs</span>
+        </div>
+
+        <div class="hero-text">
+            <div class="hero-title">
+                Join the <br>
+                <span class="text-gradient">Team.</span>
             </div>
-            <div class="card-body">
-                <form action="/register" method="POST">
-                    <div class="mb-3">
-                        <label>Choose Username</label>
-                        <input type="text" name="username" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label>Choose Password</label>
-                        <input type="password" name="password" class="form-control" required>
-                    </div>
-                    <button type="submit" class="btn btn-success w-100">Sign Up</button>
-                </form>
-                <p class="mt-2 text-center">
-                    Already have an account? <a href="/login">Login here</a>
-                </p>
-            </div>
+            <p class="hero-subtitle">
+                Create your employee account to access the support portal and track your requests.
+            </p>
         </div>
     </div>
+
+    <div class="login-right">
+        <div class="login-box">
+            <h2>Create Account</h2>
+            <p style="color: #94A3B8; margin-bottom: 30px;">Get started in less than a minute.</p>
+
+            <form method="POST">
+                <label>Email Address / Username</label>
+                <input type="text" name="username" class="form-control" placeholder="name@infomatic.com" required>
+
+                <label>Password</label>
+                <input type="password" name="password" class="form-control" placeholder="Create a strong password" required>
+
+                <button type="submit" class="btn-login">Create Account →</button>
+            </form>
+            
+            <p style="margin-top: 25px; text-align: center; color: #64748B; font-size: 0.9rem;">
+                Already have an account? <a href="{{ url_for('login') }}">Sign In</a>
+            </p>
+        </div>
+    </div>
+
 </div>
 {% endblock %}

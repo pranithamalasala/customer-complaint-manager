@@ -1,46 +1,41 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="login-container">
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
     
-    <div class="login-left">
-        <div class="brand-logo-top">
-            <span style="background: linear-gradient(to right, #F97316, #3B82F6); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">&lt;/&gt;</span> 
-            <span>Infomatic Labs</span>
-        </div>
-
-        <div class="hero-text">
-            <div class="hero-title">
-                Employee <br>
-                <span class="text-gradient">Support Desk.</span>
+    <div class="neo-card p-5" style="width: 100%; max-width: 450px;">
+        
+        <div class="text-center mb-4">
+            <div style="width: 80px; height: 80px; background: var(--accent-mint); border: 3px solid black; border-radius: 50%; margin: 0 auto; display: flex; align-items: center; justify-content: center; box-shadow: 4px 4px 0px 0px black;">
+                <span style="font-size: 2rem;">👋</span>
             </div>
-            <p class="hero-subtitle">
-                We build smart software that powers businesses. <br>
-                Log in to manage your requests efficiently.
-            </p>
         </div>
-    </div>
 
-    <div class="login-right">
-        <div class="login-box">
-            <h2>Welcome Back</h2>
-            <p style="color: #94A3B8; margin-bottom: 30px;">Enter your credentials to access the portal.</p>
+        <h2 class="text-center fw-bold mb-1">Welcome Back!</h2>
+        <p class="text-center text-muted mb-4 fw-bold small">Enter your details to enter the portal.</p>
 
-            <form method="POST">
-                <label>Email Address</label>
-                <input type="text" name="username" class="form-control" placeholder="name@infomatic.com" required>
+        <form method="POST">
+            <div class="mb-3">
+                <label class="fw-bold small ms-1">USERNAME</label>
+                <input type="text" name="username" class="form-control p-3 fw-bold" placeholder="omkar" 
+                       style="border: 2px solid black; border-radius: 12px; background: #F8F9FA;">
+            </div>
 
-                <label>Password</label>
-                <input type="password" name="password" class="form-control" placeholder="••••••••" required>
+            <div class="mb-4">
+                <label class="fw-bold small ms-1">PASSWORD</label>
+                <input type="password" name="password" class="form-control p-3 fw-bold" placeholder="•••••••" 
+                       style="border: 2px solid black; border-radius: 12px; background: #F8F9FA;">
+            </div>
 
-                <button type="submit" class="btn-login">Sign In →</button>
-            </form>
-            
-            <p style="margin-top: 25px; text-align: center; color: #64748B; font-size: 0.9rem;">
-                New employee? <a href="{{ url_for('register') }}">Create Account</a>
-            </p>
+            <button type="submit" class="btn btn-neo w-100 p-3 fs-5">
+                Get Started
+            </button>
+        </form>
+
+        <div class="text-center mt-4">
+            <a href="{{ url_for('register') }}" class="text-decoration-none fw-bold text-dark border-bottom border-dark">Create an Account</a>
         </div>
-    </div>
 
+    </div>
 </div>
 {% endblock %}

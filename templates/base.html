@@ -2,27 +2,103 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Complaint System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complaint Box</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #E0D4FC;       /* Lavender Background */
+            --primary-peach: #FFD59E;  /* The "Air Condition" Orange */
+            --accent-mint: #C4F5D2;    /* Mint Green */
+            --dark-border: #000000;    /* Pitch Black Borders */
+            --card-shadow: 6px 6px 0px 0px #000000; /* HARD Shadow */
+        }
+
+        body {
+            background-color: var(--bg-color);
+            font-family: 'Outfit', sans-serif;
+            color: black;
+            min-height: 100vh;
+        }
+
+        /* The "Neo-Brutalist" Card Style */
+        .neo-card {
+            background: white;
+            border: 3px solid var(--dark-border);
+            border-radius: 20px;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.2s;
+        }
+
+        /* The "Get Started" Button Style */
+        .btn-neo {
+            background-color: var(--primary-peach);
+            border: 2px solid var(--dark-border);
+            color: black;
+            font-weight: 800;
+            border-radius: 12px;
+            box-shadow: 4px 4px 0px 0px var(--dark-border);
+            transition: all 0.1s;
+        }
+        .btn-neo:hover {
+            transform: translate(2px, 2px); /* Button presses down */
+            box-shadow: 2px 2px 0px 0px var(--dark-border);
+            background-color: #FFC078;
+        }
+
+        /* Navbar Override */
+        .navbar {
+            background: transparent !important;
+            border-bottom: none;
+        }
+        .navbar-brand {
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: black !important;
+            background: white;
+            padding: 5px 15px;
+            border: 2px solid black;
+            border-radius: 50px;
+            box-shadow: 4px 4px 0px 0px black;
+        }
+    </style>
 </head>
-<body>
-    <nav class="navbar navbar-dark bg-primary mb-4">
+<body class="d-flex flex-column">
+
+    <nav class="navbar navbar-expand-lg py-4">
         <div class="container">
-            <a class="navbar-brand" href="/">🏛 Complaint Box</a>
-            <div>
-                <a href="/login" class="btn btn-light text-primary">Login / Admin</a>
+            <a class="navbar-brand d-flex align-items-center gap-2" href="{{ url_for('home') }}" 
+               style="background: white; padding: 8px 20px; border: 3px solid black; border-radius: 50px; box-shadow: 4px 4px 0px 0px black;">
+                
+                <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" style="height: 40px; border-radius: 50%;">
+                <span style="font-weight: 800; font-size: 1.2rem;">Infomatic Labs</span>
+            </a>
+            
+            <div class="ms-auto d-flex gap-3">
+                {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('logout') }}" class="btn btn-dark fw-bold" style="border-radius: 10px; border: 2px solid black;">Log Out</a>
+                {% endif %}
             </div>
         </div>
     </nav>
 
-    <div class="container">
-        {% block content %}
-        <div class="text-center mt-5">
-            <h1>Welcome to the System</h1>
-            <p class="lead">Click the "Login" button at the top right to enter.</p>
-        </div>
-        {% endblock %}
+    <div class="flex-grow-1">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="container mt-3">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} border-3 border-dark shadow-sm fw-bold" style="border-radius: 12px;">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        
+        {% block content %}{% endblock %}
     </div>
+
 </body>
 </html>
