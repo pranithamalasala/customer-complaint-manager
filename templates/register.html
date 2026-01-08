@@ -1,45 +1,43 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="login-container">
-    
-    <div class="login-left">
-        <div class="brand-logo-top">
-            <span style="background: linear-gradient(to right, #F97316, #3B82F6); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">&lt;/&gt;</span> 
-            <span>Infomatic Labs</span>
+<div class="container d-flex align-items-center justify-content-center" style="min-height: 85vh;">
+    <div class="row w-100 align-items-center">
+        
+        <div class="col-lg-6 mb-5 mb-lg-0 text-center text-lg-start">
+            <h5 class="text-info fw-bold mb-3" style="letter-spacing: 2px;">&lt;/&gt; JOIN THE TEAM</h5>
+            <h1 class="display-3 fw-bold text-white mb-2" style="line-height: 1;">Create</h1>
+            <h1 class="display-3 fw-bold mb-4" style="background: linear-gradient(90deg, #3B82F6, #22D3EE); -webkit-background-clip: text; -webkit-text-fill-color: transparent; line-height: 1;">Your Account.</h1>
+            <p class="lead text-muted mb-4" style="max-width: 500px;">
+                Set up your profile to submit tickets and track their status in real-time.
+            </p>
         </div>
 
-        <div class="hero-text">
-            <div class="hero-title">
-                Join the <br>
-                <span class="text-gradient">Team.</span>
+        <div class="col-lg-5 ms-auto">
+            <div class="card-dark p-5">
+                <h2 class="fw-bold text-white mb-2">Get Started</h2>
+                <p class="text-muted mb-4">Create a new employee account.</p>
+
+                <form method="POST">
+                    <div class="mb-3">
+                        <label class="text-muted small fw-bold mb-2 text-uppercase" style="letter-spacing: 1px;">Choose Username</label>
+                        <input type="text" name="username" class="form-control w-100" placeholder="e.g., jay.sharma" required>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="text-muted small fw-bold mb-2 text-uppercase" style="letter-spacing: 1px;">Create Password</label>
+                        <input type="password" name="password" class="form-control w-100" placeholder="Minimum 6 chars" required>
+                    </div>
+
+                    <button type="submit" class="btn-glow w-100 py-3 fs-5">Create Account &rarr;</button>
+                </form>
+
+                <div class="text-center mt-5">
+                    <span class="text-muted">Already have an account?</span>
+                    <a href="{{ url_for('login') }}" class="text-decoration-none text-info fw-bold ms-2">Sign In</a>
+                </div>
             </div>
-            <p class="hero-subtitle">
-                Create your employee account to access the support portal and track your requests.
-            </p>
         </div>
     </div>
-
-    <div class="login-right">
-        <div class="login-box">
-            <h2>Create Account</h2>
-            <p style="color: #94A3B8; margin-bottom: 30px;">Get started in less than a minute.</p>
-
-            <form method="POST">
-                <label>Email Address / Username</label>
-                <input type="text" name="username" class="form-control" placeholder="name@infomatic.com" required>
-
-                <label>Password</label>
-                <input type="password" name="password" class="form-control" placeholder="Create a strong password" required>
-
-                <button type="submit" class="btn-login">Create Account →</button>
-            </form>
-            
-            <p style="margin-top: 25px; text-align: center; color: #64748B; font-size: 0.9rem;">
-                Already have an account? <a href="{{ url_for('login') }}">Sign In</a>
-            </p>
-        </div>
-    </div>
-
 </div>
 {% endblock %}

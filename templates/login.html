@@ -1,41 +1,44 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+<div class="row w-100 align-items-center" style="min-height: 80vh;">
     
-    <div class="neo-card p-5" style="width: 100%; max-width: 450px;">
-        
-        <div class="text-center mb-4">
-            <div style="width: 80px; height: 80px; background: var(--accent-mint); border: 3px solid black; border-radius: 50%; margin: 0 auto; display: flex; align-items: center; justify-content: center; box-shadow: 4px 4px 0px 0px black;">
-                <span style="font-size: 2rem;">👋</span>
+    <div class="col-lg-6 mb-5 mb-lg-0">
+        <h5 class="text-secondary fw-bold mb-3 text-uppercase" style="letter-spacing: 2px;">Internal Portal</h5>
+        <h1 class="display-3 fw-bold text-white mb-2">Employee</h1>
+        <h1 class="display-3 fw-bold mb-4" style="color: #3B82F6;">Support Desk.</h1>
+        <p class="text-secondary fs-5" style="max-width: 480px;">
+            Welcome to the centralized support system. <br>
+            Track tickets, report issues, and manage workflow efficiently.
+        </p>
+    </div>
+
+    <div class="col-lg-5 ms-auto">
+        <div class="content-box p-5">
+            <h2 class="fw-bold text-white mb-2">Welcome Back</h2>
+            <p class="text-secondary mb-4">Please sign in to your account.</p>
+
+            <form method="POST">
+                <div class="mb-3">
+                    <label class="text-secondary small fw-bold mb-2">USERNAME / ID</label>
+                    <input type="text" name="username" class="form-control bg-dark border-secondary text-white p-3" placeholder="name@infomatic.com" required>
+                </div>
+
+                <div class="mb-4">
+                    <label class="text-secondary small fw-bold mb-2">PASSWORD</label>
+                    <input type="password" name="password" class="form-control bg-dark border-secondary text-white p-3" placeholder="••••••••" required>
+                </div>
+
+                <button type="submit" class="btn w-100 py-3 fw-bold text-white" 
+                        style="background: linear-gradient(90deg, #3B82F6, #22D3EE); border: none; border-radius: 6px;">
+                    Sign In &rarr;
+                </button>
+            </form>
+
+            <div class="text-center mt-4">
+                <a href="{{ url_for('register') }}" class="text-info text-decoration-none fw-bold small">Create New Account</a>
             </div>
         </div>
-
-        <h2 class="text-center fw-bold mb-1">Welcome Back!</h2>
-        <p class="text-center text-muted mb-4 fw-bold small">Enter your details to enter the portal.</p>
-
-        <form method="POST">
-            <div class="mb-3">
-                <label class="fw-bold small ms-1">USERNAME</label>
-                <input type="text" name="username" class="form-control p-3 fw-bold" placeholder="omkar" 
-                       style="border: 2px solid black; border-radius: 12px; background: #F8F9FA;">
-            </div>
-
-            <div class="mb-4">
-                <label class="fw-bold small ms-1">PASSWORD</label>
-                <input type="password" name="password" class="form-control p-3 fw-bold" placeholder="•••••••" 
-                       style="border: 2px solid black; border-radius: 12px; background: #F8F9FA;">
-            </div>
-
-            <button type="submit" class="btn btn-neo w-100 p-3 fs-5">
-                Get Started
-            </button>
-        </form>
-
-        <div class="text-center mt-4">
-            <a href="{{ url_for('register') }}" class="text-decoration-none fw-bold text-dark border-bottom border-dark">Create an Account</a>
-        </div>
-
     </div>
 </div>
 {% endblock %}

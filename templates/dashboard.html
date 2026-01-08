@@ -1,87 +1,87 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container mt-4">
-    
-    <div class="d-flex justify-content-between align-items-center mb-5">
-        <div>
-            <h1 class="display-5 fw-bold" style="text-shadow: 2px 2px 0px white;">
-                Hello, {{ current_user.username.split('@')[0] }}
-            </h1>
-        </div>
-        <a href="{{ url_for('file_complaint') }}" class="btn btn-neo px-4 py-2">
-            + New Ticket
+<div class="cyber-box p-4 mb-5 d-flex justify-content-between align-items-end" style="border-color: var(--accent-cyan);">
+    <div>
+        <h5 class="text-uppercase text-info small fw-bold mb-1" style="letter-spacing: 2px;">Employee Portal</h5>
+        <h1 class="display-5 fw-bold text-white mb-0" style="font-family: 'Chakra Petch';">
+            Hello, <span style="color: var(--accent-cyan);">{{ current_user.username.split('@')[0] }}</span>
+        </h1>
+    </div>
+    <div>
+        <a href="{{ url_for('file_complaint') }}" class="btn-cyber">
+           + NEW TICKET
         </a>
     </div>
+</div>
 
-    <div class="row mb-5">
-        <div class="col-md-4">
-            <div class="neo-card p-4 text-center" style="background: white;">
-                <h6 class="fw-bold text-uppercase small">Total Tickets</h6>
-                <h1 class="display-4 fw-bold mt-2">{{ total }}</h1>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="neo-card p-4 text-center" style="background: var(--primary-peach);">
-                <h6 class="fw-bold text-uppercase small">Pending</h6>
-                <h1 class="display-4 fw-bold mt-2">{{ pending }}</h1>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="neo-card p-4 text-center" style="background: var(--accent-mint);">
-                <h6 class="fw-bold text-uppercase small">Resolved</h6>
-                <h1 class="display-4 fw-bold mt-2">{{ resolved }}</h1>
-            </div>
+<div class="row mb-5 g-4">
+    <div class="col-md-4">
+        <div class="cyber-box p-4 text-center h-100">
+            <h6 class="fw-bold text-secondary text-uppercase" style="letter-spacing: 1px;">Total Tickets</h6>
+            <h2 class="display-4 fw-bold text-white mb-0" style="font-family: 'Chakra Petch';">{{ total }}</h2>
         </div>
     </div>
-
-    <div class="neo-card p-0 overflow-hidden">
-        <table class="table mb-0">
-            <thead style="background: black; color: white;">
-                <tr>
-                    <th class="py-3 ps-4">ID</th>
-                    <th class="py-3">Subject</th>
-                    <th class="py-3">Priority</th>
-                    <th class="py-3">Category</th>
-                    <th class="py-3 text-end pe-4">Status</th>
-                </tr>
-            </thead>
-            <tbody class="bg-white">
-                {% for complaint in complaints %}
-                <tr style="border-bottom: 2px solid #eee;">
-                    <td class="ps-4 fw-bold">#{{ complaint.id }}</td>
-                    <td class="fw-bold">{{ complaint.subject }}</td>
-                    
-                    <td>
-                        {% if complaint.priority == 'High' %}
-                            <span class="badge bg-danger border border-2 border-dark text-white rounded-pill">High</span>
-                        {% elif complaint.priority == 'Medium' %}
-                            <span class="badge bg-warning border border-2 border-dark text-dark rounded-pill">Medium</span>
-                        {% else %}
-                            <span class="badge bg-info border border-2 border-dark text-dark rounded-pill">Low</span>
-                        {% endif %}
-                    </td>
-
-                    <td><span class="badge bg-light text-dark border border-dark rounded-pill">{{ complaint.category }}</span></td>
-                    
-                    <td class="text-end pe-4">
-                        {% if complaint.status == 'Resolved' %}
-                            <span class="badge" style="background: var(--accent-mint); color: black; border: 2px solid black;">Resolved</span>
-                        {% else %}
-                            <span class="badge" style="background: var(--primary-peach); color: black; border: 2px solid black;">Pending</span>
-                        {% endif %}
-                    </td>
-                </tr>
-                {% else %}
-                <tr>
-                    <td colspan="5" class="text-center py-5 fw-bold text-muted">
-                        No tickets yet! Go create one.
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <div class="col-md-4">
+        <div class="cyber-box p-4 text-center h-100" style="border-color: #FACC15;">
+            <h6 class="fw-bold text-warning text-uppercase" style="letter-spacing: 1px;">Pending</h6>
+            <h2 class="display-4 fw-bold text-warning mb-0" style="font-family: 'Chakra Petch';">{{ pending }}</h2>
+        </div>
     </div>
+    <div class="col-md-4">
+        <div class="cyber-box p-4 text-center h-100" style="border-color: #4ADE80;">
+            <h6 class="fw-bold text-success text-uppercase" style="letter-spacing: 1px;">Resolved</h6>
+            <h2 class="display-4 fw-bold text-success mb-0" style="font-family: 'Chakra Petch';">{{ resolved }}</h2>
+        </div>
+    </div>
+</div>
 
+<div class="cyber-box p-0 overflow-hidden">
+    <div class="p-4 border-bottom" style="border-color: var(--border-color); background: #1e293b;">
+        <h4 class="fw-bold mb-0 text-white text-uppercase" style="font-family: 'Chakra Petch';">My Ticket History</h4>
+    </div>
+    <table class="table mb-0" style="color: white;">
+        <thead style="background: #020617;">
+            <tr>
+                <th class="py-4 ps-4 text-secondary text-uppercase small">ID</th>
+                <th class="py-4 text-secondary text-uppercase small">Subject</th>
+                <th class="py-4 text-secondary text-uppercase small">Priority</th>
+                <th class="py-4 text-secondary text-uppercase small">Category</th>
+                <th class="py-4 text-end pe-4 text-secondary text-uppercase small">Status</th>
+            </tr>
+        </thead>
+        <tbody style="border-top: none;">
+            {% for complaint in complaints %}
+            <tr style="border-bottom: 1px solid #334155;">
+                <td class="ps-4 py-4 fw-bold text-muted">#{{ complaint.id }}</td>
+                <td class="py-4 fw-bold">{{ complaint.subject }}</td>
+                
+                <td class="py-4">
+                    {% if complaint.priority == 'High' %}
+                        <span class="badge bg-danger text-white rounded-0 border border-danger px-3 py-2">HIGH</span>
+                    {% elif complaint.priority == 'Medium' %}
+                        <span class="badge bg-warning text-dark rounded-0 border border-warning px-3 py-2">MED</span>
+                    {% else %}
+                        <span class="badge bg-secondary text-white rounded-0 border border-secondary px-3 py-2">LOW</span>
+                    {% endif %}
+                </td>
+
+                <td class="py-4"><span class="badge border border-secondary text-secondary rounded-0 px-2 py-2" style="background: transparent;">{{ complaint.category }}</span></td>
+                
+                <td class="text-end pe-4 py-4">
+                    {% if complaint.status == 'Resolved' %}
+                        <span class="badge border border-success text-success rounded-0 px-3 py-2" style="background: rgba(74, 222, 128, 0.1);">RESOLVED</span>
+                    {% else %}
+                        <span class="badge border border-warning text-warning rounded-0 px-3 py-2" style="background: rgba(250, 204, 21, 0.1);">PENDING</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="5" class="text-center py-5 text-muted">NO DATA FOUND</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 {% endblock %}
