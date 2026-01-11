@@ -1,42 +1,79 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="row w-100 align-items-center" style="min-height: 80vh;">
-    
-    <div class="col-lg-6 mb-5 mb-lg-0">
-        <h5 class="text-secondary fw-bold mb-3 text-uppercase" style="letter-spacing: 2px;">Internal Portal</h5>
-        <h1 class="display-3 fw-bold text-white mb-2">Employee</h1>
-        <h1 class="display-3 fw-bold mb-4" style="color: #3B82F6;">Support Desk.</h1>
-        <p class="text-secondary fs-5" style="max-width: 480px;">
-            Welcome to the centralized support system. <br>
-            Track tickets, report issues, and manage workflow efficiently.
-        </p>
-    </div>
-
-    <div class="col-lg-5 ms-auto">
-        <div class="content-box p-5">
-            <h2 class="fw-bold text-white mb-2">Welcome Back</h2>
-            <p class="text-secondary mb-4">Please sign in to your account.</p>
-
-            <form method="POST">
-                <div class="mb-3">
-                    <label class="text-secondary small fw-bold mb-2">USERNAME / ID</label>
-                    <input type="text" name="username" class="form-control bg-dark border-secondary text-white p-3" placeholder="name@infomatic.com" required>
+<div class="d-flex align-items-center min-vh-100 py-4 py-lg-0" style="margin-top: -60px;"> 
+    <div class="container container-tight">
+        <div class="row w-100 align-items-center m-0 justify-content-between">
+            
+            <div class="col-12 col-lg-6 mb-5 mb-lg-0 text-center text-lg-start">
+                
+                <div class="d-inline-flex align-items-center px-3 py-1 rounded-pill mb-3" 
+                     style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2);">
+                    <span style="height: 8px; width: 8px; background-color: #10b981; border-radius: 50%; display: inline-block; margin-right: 8px; box-shadow: 0 0 5px #10b981;"></span>
+                    <span class="text-success small fw-bold" style="font-size: 0.75rem; letter-spacing: 0.5px;">ALL SYSTEMS OPERATIONAL</span>
                 </div>
 
-                <div class="mb-4">
-                    <label class="text-secondary small fw-bold mb-2">PASSWORD</label>
-                    <input type="password" name="password" class="form-control bg-dark border-secondary text-white p-3" placeholder="••••••••" required>
+                <h1 class="display-4 fw-bold text-white mb-0">Employee</h1>
+                <h1 class="display-4 fw-bold mb-3" style="color: #3b82f6;">Support Desk.</h1>
+                
+                <p class="text-light fs-6 mx-auto mx-lg-0 mb-4" style="max-width: 480px; line-height: 1.6; opacity: 0.9;">
+                    Welcome to the Infomatic Labs centralized support system. 
+                    Log in to track requests, access resources, and manage tickets.
+                </p>
+
+                <div class="row g-2 mt-4 text-start justify-content-center justify-content-lg-start">
+                    <div class="col-6 col-md-4">
+                        <div class="feature-box h-100">
+                            <span class="feature-icon">⚡</span>
+                            <h6 class="text-white small fw-bold mb-1">Fast Response</h6>
+                            <p class="text-muted small mb-0" style="font-size: 0.75rem;">Real-time updates on your tickets.</p>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4">
+                        <div class="feature-box h-100">
+                            <span class="feature-icon">🔒</span>
+                            <h6 class="text-white small fw-bold mb-1">Secure Access</h6>
+                            <p class="text-muted small mb-0" style="font-size: 0.75rem;">Encrypted enterprise login.</p>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4">
+                        <div class="feature-box h-100">
+                            <span class="feature-icon">📂</span>
+                            <h6 class="text-white small fw-bold mb-1">Archives</h6>
+                            <p class="text-muted small mb-0" style="font-size: 0.75rem;">View all your past history.</p>
+                        </div>
+                    </div>
                 </div>
 
-                <button type="submit" class="btn w-100 py-3 fw-bold text-white" 
-                        style="background: linear-gradient(90deg, #3B82F6, #22D3EE); border: none; border-radius: 6px;">
-                    Sign In &rarr;
-                </button>
-            </form>
+            </div>
 
-            <div class="text-center mt-4">
-                <a href="{{ url_for('register') }}" class="text-info text-decoration-none fw-bold small">Create New Account</a>
+            <div class="col-12 col-lg-5">
+                <div class="card-pro p-4 p-md-5">
+                    <h3 class="fw-bold text-white mb-2">Sign In</h3>
+                    <p class="text-light mb-4 small" style="opacity: 0.7;">Enter your credentials.</p>
+
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label class="text-white small fw-bold mb-2" style="opacity: 0.7;">EMAIL ADDRESS</label>
+                            <input type="text" name="username" class="form-control-pro w-100" placeholder="name@infomatic.com" required>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="text-white small fw-bold mb-2" style="opacity: 0.7;">PASSWORD</label>
+                            <input type="password" name="password" class="form-control-pro w-100" placeholder="••••••••" required>
+                        </div>
+
+                        <button type="submit" class="btn w-100 py-3 fw-bold text-white" 
+                                style="background-color: #2563eb; border: none; border-radius: 6px; font-size: 1.1rem;">
+                            Sign In
+                        </button>
+                    </form>
+
+                    <div class="text-center mt-4 border-top border-secondary pt-3" style="border-color: #334155 !important;">
+                        <span class="text-muted small">New Employee?</span>
+                        <a href="{{ url_for('register') }}" class="text-decoration-none small fw-bold ms-1" style="color: #3b82f6;">Register Account</a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

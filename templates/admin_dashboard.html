@@ -1,96 +1,100 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-5">
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
     <div>
-        <h5 class="text-white text-uppercase small fw-bold mb-1" style="letter-spacing: 1px; opacity: 0.8;">Admin Panel</h5>
-        <h1 class="fw-bold text-white display-5">Manager Dashboard</h1>
+        <h5 class="text-light fw-bold mb-1 text-uppercase small" style="letter-spacing: 1px; opacity: 0.7;">Admin Panel</h5>
+        <h1 class="fw-bold text-white display-6">Manager Dashboard</h1>
     </div>
     <div>
-        <span class="badge bg-primary px-4 py-2 rounded-pill fw-bold" style="font-size: 0.9rem;">ADMIN MODE ACTIVE</span>
+        <span class="badge bg-primary px-4 py-2 rounded-1 fw-bold" style="background-color: #2563eb !important;">ADMIN MODE</span>
     </div>
 </div>
 
-<div class="row mb-5 g-4">
-    <div class="col-md-3">
-        <div class="card-dark p-4 text-center h-100">
-            <h6 class="text-white small text-uppercase fw-bold" style="opacity: 0.9;">Total Tickets</h6>
+<div class="row mb-5 g-3">
+    <div class="col-6 col-md-3">
+        <div class="card-pro p-3 p-md-4 text-center h-100">
+            <h6 class="text-white small text-uppercase fw-bold" style="opacity: 0.7;">Total</h6>
             <h2 class="text-white fw-bold display-6 mb-0 mt-2">{{ total }}</h2>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="card-dark p-4 text-center h-100">
-             <h6 class="text-white small text-uppercase fw-bold" style="opacity: 0.9;">Pending</h6>
-            <h2 class="text-warning fw-bold display-6 mb-0 mt-2">{{ pending }}</h2>
+    <div class="col-6 col-md-3">
+        <div class="card-pro p-3 p-md-4 text-center h-100">
+            <h6 class="text-white small text-uppercase fw-bold" style="opacity: 0.7;">Pending</h6>
+            <h2 class="fw-bold display-6 mb-0 mt-2" style="color: #f59e0b;">{{ pending }}</h2>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="card-dark p-4 text-center h-100" style="border: 1px solid #EF4444; background: rgba(239, 68, 68, 0.1);">
-            <h6 class="text-danger small text-uppercase fw-bold">High Priority</h6>
+    <div class="col-6 col-md-3">
+        <div class="card-pro p-3 p-md-4 text-center h-100" style="border: 1px solid rgba(239, 68, 68, 0.5); background: rgba(239, 68, 68, 0.1);">
+            <h6 class="text-danger small text-uppercase fw-bold">Priority</h6>
             <h2 class="text-danger fw-bold display-6 mb-0 mt-2">{{ high_priority }}</h2>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="card-dark p-4 text-center h-100">
-             <h6 class="text-white small text-uppercase fw-bold" style="opacity: 0.9;">Resolved</h6>
-            <h2 class="text-success fw-bold display-6 mb-0 mt-2">{{ resolved }}</h2>
+    <div class="col-6 col-md-3">
+        <div class="card-pro p-3 p-md-4 text-center h-100">
+            <h6 class="text-white small text-uppercase fw-bold" style="opacity: 0.7;">Resolved</h6>
+            <h2 class="fw-bold display-6 mb-0 mt-2" style="color: #10b981;">{{ resolved }}</h2>
         </div>
     </div>
 </div>
 
-<div class="card-dark overflow-hidden">
-    <div class="p-4 border-bottom border-dark" style="background: #020617;">
+<div class="card-pro overflow-hidden">
+    <div class="p-4 border-bottom border-secondary" style="border-color: #334155 !important;">
          <h5 class="text-white fw-bold mb-0 text-uppercase" style="letter-spacing: 1px;">Global Ticket Queue</h5>
     </div>
-    <table class="table table-dark table-hover mb-0 align-middle" style="background: transparent; --bs-table-bg: transparent;">
-        <thead style="background-color: #020617;">
-            <tr>
-                <th class="ps-4 py-4 text-white text-uppercase small" style="letter-spacing: 1px; opacity: 0.7;">ID</th>
-                <th class="py-4 text-white text-uppercase small" style="letter-spacing: 1px; opacity: 0.7;">Employee</th>
-                <th class="py-4 text-white text-uppercase small" style="letter-spacing: 1px; opacity: 0.7;">Issue</th>
-                <th class="py-4 text-white text-uppercase small" style="letter-spacing: 1px; opacity: 0.7;">Priority</th>
-                <th class="py-4 text-white text-uppercase small" style="letter-spacing: 1px; opacity: 0.7;">Category</th>
-                <th class="py-4 text-end pe-4 text-white text-uppercase small" style="letter-spacing: 1px; opacity: 0.7;">Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for complaint in complaints %}
-            <tr style="border-bottom: 1px solid #1E293B; {% if complaint.priority == 'High' %} background-color: rgba(239, 68, 68, 0.15) !important; {% endif %}">
-                <td class="ps-4 text-white fw-bold" style="opacity: 0.8;">#{{ complaint.id }}</td>
-                <td class="text-info fw-bold">{{ complaint.user.username }}</td>
-                <td class="text-white">{{ complaint.subject }}</td>
+    
+    <div class="table-responsive">
+        <table class="table table-dark table-hover mb-0 align-middle text-nowrap">
+            <thead style="background-color: #0f172a;">
+                <tr>
+                    <th class="ps-4 py-3 text-white small" style="opacity: 0.6;">ID</th>
+                    <th class="py-3 text-white small" style="opacity: 0.6;">EMPLOYEE</th>
+                    <th class="py-3 text-white small" style="opacity: 0.6;">ISSUE</th>
+                    <th class="py-3 text-white small" style="opacity: 0.6;">PRIORITY</th>
+                    <th class="py-3 text-white small" style="opacity: 0.6;">CATEGORY</th>
+                    <th class="py-3 text-end pe-4 text-white small" style="opacity: 0.6;">ACTION</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for complaint in complaints %}
+                <tr style="border-bottom: 1px solid #334155; {% if complaint.priority == 'High' %} background-color: rgba(239, 68, 68, 0.15) !important; {% endif %}">
+                    <td class="ps-4 text-white fw-bold" style="opacity: 0.8;">#{{ complaint.id }}</td>
+                    <td class="text-info fw-bold">{{ complaint.user.username.split('@')[0] }}</td>
+                    <td class="text-white">{{ complaint.subject }}</td>
 
-                <td>
-                    {% if complaint.priority == 'High' %}
-                        <span class="badge bg-danger bg-opacity-25 text-danger border border-danger px-3 py-2 rounded-pill">HIGH</span>
-                    {% elif complaint.priority == 'Medium' %}
-                        <span class="badge bg-warning bg-opacity-25 text-warning border border-warning px-3 py-2 rounded-pill">MED</span>
-                    {% else %}
-                        <span class="badge bg-secondary bg-opacity-25 text-secondary border border-secondary px-3 py-2 rounded-pill">LOW</span>
-                    {% endif %}
-                </td>
+                    <td>
+                        {% if complaint.priority == 'High' %}
+                            <span class="badge bg-danger rounded-1 px-2">High</span>
+                        {% elif complaint.priority == 'Medium' %}
+                            <span class="badge bg-warning text-dark rounded-1 px-2">Medium</span>
+                        {% else %}
+                            <span class="badge bg-secondary rounded-1 px-2">Low</span>
+                        {% endif %}
+                    </td>
 
-                <td><span class="badge" style="background-color: #1E293B; color: #ffffff; padding: 8px 12px; border: 1px solid #334155;">{{ complaint.category }}</span></td>
-                
-                <td class="text-end pe-4">
-                    {% if complaint.status == 'Resolved' %}
-                        <span class="text-success fw-bold small text-uppercase">✓ Completed</span>
-                    {% else %}
-                        <a href="{{ url_for('resolve_complaint', id=complaint.id) }}" 
-                           class="btn btn-sm btn-outline-info fw-bold px-4 rounded-pill" style="border-width: 1px;">
-                           MARK RESOLVED
-                        </a>
-                    {% endif %}
-                </td>
-            </tr>
-            {% else %}
-            <tr>
-                <td colspan="6" class="text-center py-5 text-white" style="opacity: 0.7;">
-                    No tickets found in the queue.
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+                    <td><span class="badge bg-transparent border border-secondary text-light rounded-1">{{ complaint.category }}</span></td>
+                    
+                    <td class="text-end pe-4">
+                        {% if complaint.status == 'Resolved' %}
+                            <span class="text-success fw-bold small text-uppercase">✓ Completed</span>
+                        {% else %}
+                            <a href="{{ url_for('resolve_complaint', id=complaint.id) }}" 
+                               class="btn btn-sm btn-outline-primary fw-bold px-3 rounded-1" 
+                               style="border-color: #2563eb; color: #2563eb;">
+                               Mark Resolved
+                            </a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="6" class="text-center py-5">
+                        <p class="text-light mb-0" style="opacity: 0.5;">Queue is empty.</p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 {% endblock %}
