@@ -78,10 +78,10 @@
                         {% if complaint.status == 'Resolved' %}
                             <span class="text-success fw-bold small text-uppercase">✓ Completed</span>
                         {% else %}
-                            <a href="{{ url_for('resolve_complaint', id=complaint.id) }}" 
-                               class="btn btn-sm btn-outline-primary fw-bold px-3 rounded-1" 
-                               style="border-color: #2563eb; color: #2563eb;">
-                               Mark Resolved
+                            <a href="{{ url_for('ticket_detail', id=complaint.id) }}" 
+                               class="btn btn-sm btn-primary fw-bold px-3 rounded-1" 
+                               style="background-color: #2563eb; border: none;">
+                               View Ticket
                             </a>
                         {% endif %}
                     </td>

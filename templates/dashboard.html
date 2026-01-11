@@ -48,7 +48,7 @@
                     <th class="py-3 text-white small" style="opacity: 0.6;">SUBJECT</th>
                     <th class="py-3 text-white small" style="opacity: 0.6;">PRIORITY</th>
                     <th class="py-3 text-white small" style="opacity: 0.6;">CATEGORY</th>
-                    <th class="py-3 text-end pe-4 text-white small" style="opacity: 0.6;">STATUS</th>
+                    <th class="py-3 text-end pe-4 text-white small" style="opacity: 0.6;">ACTION</th>
                 </tr>
             </thead>
             <tbody>
@@ -70,11 +70,15 @@
                     <td><span class="badge bg-transparent border border-secondary text-light rounded-1" style="opacity: 0.9;">{{ complaint.category }}</span></td>
                     
                     <td class="text-end pe-4">
-                        {% if complaint.status == 'Resolved' %}
-                            <span class="text-success small fw-bold">● Resolved</span>
-                        {% else %}
-                            <span class="text-warning small fw-bold">● Pending</span>
-                        {% endif %}
+                        <a href="{{ url_for('ticket_detail', id=complaint.id) }}" 
+                           class="btn btn-sm btn-outline-primary fw-bold px-4 rounded-1" 
+                           style="border-color: #334155; color: white;">
+                           {% if complaint.status == 'Resolved' %}
+                                View Resolved
+                           {% else %}
+                                View / Reply
+                           {% endif %}
+                        </a>
                     </td>
                 </tr>
                 {% else %}

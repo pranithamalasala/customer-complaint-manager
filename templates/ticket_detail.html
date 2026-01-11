@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container pb-5">
+    <a href="{{ url_for('admin_dashboard') if current_user.is_admin else url_for('dashboard') }}" 
+       class="text-decoration-none text-muted small fw-bold mb-3 d-inline-block">
+       &larr; BACK TO DASHBOARD
+    </a>
+
+    <div class="row g-4">
+        
+        <div class="col-12 col-lg-8">
+            <div class="card-pro h-100">
+                <div class="p-4 border-bottom border-secondary" style="border-color: #334155 !important;">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <span class="badge bg-primary mb-2">#{{ complaint.id }}</span>
+                            <h3 class="text-white fw-bold mb-1">{{ complaint.subject }}</h3>
+                            <p class="text-muted small mb-0">Created via Portal</p>
+                        </div>
+                        <div>
+                            {% if complaint.status == 'Resolved' %}
+                                <span class="badge bg-success px-3 py-2">RESOLVED</span>
+                            {% else %}
+                                <span class="badge bg-warning text-dark px-3 py-2">PENDING</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-4" style="background: #0b1120; min-height: 400px;">
+                    
+                    <div class="d-flex gap-3 mb-4">
+                        <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center text-white fw-bold flex-shrink-0" 
+                             style="width: 40px; height: 40px;">
+                             {{ complaint.user.username[0].upper() }}
+                        </div>
+                        <div>
+                            <div class="mb-1">
+                                <span class="text-white fw-bold me-2">{{ complaint.user.username.split('@')[0] }}</span>
+                                <span class="text-muted small">Original Request</span>
+                            </div>
+                            <div class="p-3 rounded-3" style="background: #1e293b; color: #cbd5e1;">
+                                {{ complaint.description }}
+                            </div>
+                        </div>
+                    </div>
+
+                    {% for comment in complaint.comments %}
+                    <div class="d-flex gap-3 mb-4 {% if comment.user.username == 'Omkar' %}flex-row-reverse text-end{% endif %}">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold flex-shrink-0" 
+                             style="width: 40px; height: 40px; background-color: {% if comment.user.username == 'Omkar' %}#2563eb{% else %}#475569{% endif %};">
+                             {{ comment.user.username[0].upper() }}
+                        </div>
+                        
+                        <div style="max-width: 75%;">
+                            <div class="mb-1">
+                                <span class="text-white fw-bold mx-2">{{ comment.user.username.split('@')[0] }}</span>
+                                <span class="text-muted small">{{ comment.timestamp.strftime('%H:%M') }}</span>
+                            </div>
+                            <div class="p-3 rounded-3 text-start" 
+                                 style="background: {% if comment.user.username == 'Omkar' %}#2563eb{% else %}#1e293b{% endif %}; 
+                                        color: white;">
+                                {{ comment.content }}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                </div>
+
+                <div class="p-4 border-top border-secondary" style="background: #1e293b; border-color: #334155 !important;">
+                    {% if complaint.status == 'Resolved' %}
+                        <div class="alert alert-success d-flex align-items-center mb-0" role="alert">
+                            <span class="me-2">✓</span>
+                            <div>This ticket is marked as <strong>Resolved</strong>. No further replies can be sent.</div>
+                        </div>
+                    {% else %}
+                        <form method="POST">
+                            <textarea name="content" class="form-control-pro w-100 mb-3" rows="3" placeholder="Type your reply here..." required></textarea>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="text-muted small">
+                                    <span class="me-2">Markdown supported</span>
+                                </div>
+                                <div class="d-flex gap-2">
+                                    {% if current_user.is_admin %}
+                                        <a href="{{ url_for('resolve_complaint', id=complaint.id) }}" class="btn btn-outline-success fw-bold btn-sm">Mark Resolved</a>
+                                    {% endif %}
+                                    
+                                    <button type="submit" class="btn btn-primary fw-bold px-4">Send Reply</button>
+                                </div>
+                            </div>
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-lg-4">
+            <div class="card-pro p-4">
+                <h6 class="text-muted text-uppercase small fw-bold mb-4">Requester Details</h6>
+                
+                <div class="d-flex align-items-center gap-3 mb-4">
+                    <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center text-white display-6 fw-bold" 
+                         style="width: 60px; height: 60px;">
+                         {{ complaint.user.username[0].upper() }}
+                    </div>
+                    <div>
+                        <h5 class="text-white fw-bold mb-0">{{ complaint.user.username.split('@')[0] }}</h5>
+                        <p class="text-muted small mb-0">{{ complaint.user.username }}</p>
+                    </div>
+                </div>
+
+                <hr class="border-secondary my-4">
+
+                <div class="mb-3">
+                    <label class="text-muted small fw-bold d-block mb-1">TICKET ID</label>
+                    <span class="text-white">#{{ complaint.id }}</span>
+                </div>
+                <div class="mb-3">
+                    <label class="text-muted small fw-bold d-block mb-1">PRIORITY</label>
+                    {% if complaint.priority == 'High' %}
+                        <span class="badge bg-danger">High Priority</span>
+                    {% else %}
+                        <span class="badge bg-secondary">Low Priority</span>
+                    {% endif %}
+                </div>
+                <div class="mb-3">
+                    <label class="text-muted small fw-bold d-block mb-1">CATEGORY</label>
+                    <span class="badge border border-secondary text-light">{{ complaint.category }}</span>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

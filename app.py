@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
-from datetime import datetime
+from datetime import datetime  # <--- Essential for the chat timestamps
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'infomatic_secret_key_123'
@@ -20,18 +20,32 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(150), unique=True, nullable=False)
     password = db.Column(db.String(150), nullable=False)
     is_admin = db.Column(db.Boolean, default=False)
+    # Relationship to access comments written by this user
+    # (Defined via backref in Comment, but accessible here)
 
 class Complaint(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     subject = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.String(500), nullable=False)
     category = db.Column(db.String(50), nullable=False)
-    priority = db.Column(db.String(20), default='Low') # <--- NEW: Priority Column
-    description = db.Column(db.Text, nullable=False)
+    priority = db.Column(db.String(20), default='Low')
     status = db.Column(db.String(20), default='Pending')
-    date_created = db.Column(db.DateTime, default=datetime.utcnow)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     
-    user = db.relationship('User', backref=db.backref('complaints', lazy=True))
+    # Linked comments
+    comments = db.relationship('Comment', backref='complaint', lazy=True)
+    # Linked user who created it
+    user = db.relationship('User', backref='complaints')
+
+class Comment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.String(500), nullable=False)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    complaint_id = db.Column(db.Integer, db.ForeignKey('complaint.id'), nullable=False)
+    
+    # Link to user who wrote the comment
+    user = db.relationship('User', backref='comments')
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -102,7 +116,7 @@ def dashboard():
     
     my_complaints = Complaint.query.filter_by(user_id=current_user.id).all()
     
-    # --- CALCULATE STATS FOR EMPLOYEE ---
+    # Stats
     total = len(my_complaints)
     resolved = sum(1 for c in my_complaints if c.status == 'Resolved')
     pending = total - resolved
@@ -117,7 +131,7 @@ def admin_dashboard():
     
     all_complaints = Complaint.query.all()
     
-    # --- CALCULATE STATS FOR MANAGER ---
+    # Stats
     total = len(all_complaints)
     resolved = sum(1 for c in all_complaints if c.status == 'Resolved')
     pending = total - resolved
@@ -131,7 +145,7 @@ def file_complaint():
     if request.method == 'POST':
         subject = request.form.get('subject')
         category = request.form.get('category')
-        priority = request.form.get('priority') # <--- Get Priority from form
+        priority = request.form.get('priority')
         description = request.form.get('description')
         
         new_complaint = Complaint(user_id=current_user.id, subject=subject, category=category, priority=priority, description=description)
@@ -141,16 +155,38 @@ def file_complaint():
         
     return render_template('file_complaint.html')
 
+# --- NEW: TICKET DETAIL & CHAT ROUTE ---
+@app.route('/ticket/<int:id>', methods=['GET', 'POST'])
+@login_required
+def ticket_detail(id):
+    complaint = Complaint.query.get_or_404(id)
+    
+    # Handle New Comment
+    if request.method == 'POST':
+        content = request.form.get('content')
+        if content:
+            new_comment = Comment(content=content, user_id=current_user.id, complaint_id=complaint.id)
+            db.session.add(new_comment)
+            db.session.commit()
+            flash('Reply posted successfully!', 'success')
+            return redirect(url_for('ticket_detail', id=id))
+
+    return render_template('ticket_detail.html', complaint=complaint)
+
+# --- UPDATED: RESOLVE ROUTE (Redirects to detail view now) ---
 @app.route('/resolve/<int:id>')
 @login_required
 def resolve_complaint(id):
     if not current_user.is_admin:
         return redirect(url_for('dashboard'))
-        
+
     complaint = Complaint.query.get_or_404(id)
     complaint.status = 'Resolved'
     db.session.commit()
-    return redirect(url_for('admin_dashboard'))
+    flash('Ticket marked as Resolved!', 'success')
+    
+    # Redirect back to the Ticket Detail page so they see the update
+    return redirect(url_for('ticket_detail', id=id))
 
 @app.route('/logout')
 @login_required
