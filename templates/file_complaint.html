@@ -1,53 +1,59 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container d-flex justify-content-center align-items-center" style="min-height: 85vh;">
-    
-    <div class="card shadow-lg" style="width: 100%; max-width: 600px; background-color: #0F172A; border: 1px solid #1E293B; border-radius: 20px;">
-        <div class="card-body p-5">
-            
-            <div class="text-center mb-4">
-                <h2 class="fw-bold text-white">Submit a New Ticket</h2>
-                <p class="text-muted">Describe your issue below and our IT team will resolve it.</p>
-            </div>
+<div class="d-flex justify-content-center align-items-center min-vh-75 py-4">
+    <div class="col-12 col-md-8 col-lg-6">
+        
+        <a href="{{ url_for('dashboard') }}" class="text-decoration-none text-muted small fw-bold mb-3 d-inline-block">
+            &larr; CANCEL & RETURN
+        </a>
 
-            <form method="POST">
+        <div class="card-pro p-4 p-md-5">
+            <h2 class="text-white fw-bold mb-1">Submit a Ticket</h2>
+            <p class="text-muted small mb-4">Describe your issue in detail. Our team usually responds within 2 hours.</p>
+
+            <form method="POST" enctype="multipart/form-data">
                 
-                <div class="mb-4">
-                    <label class="form-label text-secondary small text-uppercase fw-bold">Subject / Issue Title</label>
-                    <input type="text" name="subject" class="form-control form-control-lg" 
-                           placeholder="e.g. WiFi not connecting" 
-                           style="background-color: #1E293B; border: 1px solid #334155; color: white; font-size: 1rem;" required>
+                <div class="mb-3">
+                    <label class="text-white small fw-bold mb-2" style="opacity: 0.7;">ISSUE SUBJECT</label>
+                    <input type="text" name="subject" class="form-control-pro w-100" placeholder="e.g., Wifi is not connecting" required>
+                </div>
+
+                <div class="row g-3 mb-3">
+                    <div class="col-6">
+                        <label class="text-white small fw-bold mb-2" style="opacity: 0.7;">CATEGORY</label>
+                        <select name="category" class="form-control-pro w-100" style="cursor: pointer;">
+                            <option value="Hardware">Hardware</option>
+                            <option value="Software">Software</option>
+                            <option value="Network">Network / Wifi</option>
+                            <option value="Account">Account Access</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="col-6">
+                        <label class="text-white small fw-bold mb-2" style="opacity: 0.7;">PRIORITY</label>
+                        <select name="priority" class="form-control-pro w-100" style="cursor: pointer;">
+                            <option value="Low">Low</option>
+                            <option value="Medium" selected>Medium</option>
+                            <option value="High" style="color: #ef4444; font-weight: bold;">High - Emergency</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="text-white small fw-bold mb-2" style="opacity: 0.7;">ATTACH SCREENSHOT (Optional)</label>
+                    <input type="file" name="file" class="form-control-pro w-100" accept="image/*">
                 </div>
 
                 <div class="mb-4">
-                    <label class="form-label text-secondary small text-uppercase fw-bold">Category</label>
-                    <select name="category" class="form-select form-select-lg" 
-                            style="background-color: #1E293B; border: 1px solid #334155; color: white; font-size: 1rem;">
-                        <option value="Hardware">Hardware (Laptop, Mouse, Monitor)</option>
-                        <option value="Software">Software (VS Code, Python, Installation)</option>
-                        <option value="Network">Network / WiFi</option>
-                        <option value="Account">Account / Password Reset</option>
-                        <option value="Other">Other</option>
-                    </select>
+                    <label class="text-white small fw-bold mb-2" style="opacity: 0.7;">DETAILED DESCRIPTION</label>
+                    <textarea name="description" class="form-control-pro w-100" rows="5" placeholder="Please list any error messages or steps to reproduce the issue..." required></textarea>
                 </div>
 
-                <div class="mb-5">
-                    <label class="form-label text-secondary small text-uppercase fw-bold">Detailed Description</label>
-                    <textarea name="description" rows="5" class="form-control" 
-                              placeholder="Please provide details..." 
-                              style="background-color: #1E293B; border: 1px solid #334155; color: white; font-size: 1rem;" required></textarea>
-                </div>
-
-                <div class="d-grid gap-3">
-                    <button type="submit" class="btn btn-lg fw-bold" 
-                            style="background: linear-gradient(90deg, #3B82F6, #22D3EE); color: white; border: none;">
-                        Submit Ticket
-                    </button>
-                    <a href="{{ url_for('dashboard') }}" class="btn btn-link text-muted" style="text-decoration: none;">
-                        Cancel and go back
-                    </a>
-                </div>
+                <button type="submit" class="btn w-100 py-3 fw-bold text-white" 
+                        style="background-color: #2563eb; border: none; border-radius: 6px; font-size: 1.1rem; box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);">
+                    Submit Ticket
+                </button>
 
             </form>
         </div>
