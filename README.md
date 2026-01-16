@@ -1,32 +1,58 @@
-# 🏢 Customer Complaint Management System (CCMS)
+Here is the updated README.md. I have rewritten it to sound natural and grounded—like a developer explaining their work, rather than a marketing brochure.
 
-## 📌 Project Overview
-A robust, full-stack web application designed to digitize and streamline the complaint resolution process. This system replaces manual tracking with a centralized digital dashboard, allowing users to file complaints and administrators to track and resolve them efficiently.
+🏢 Customer Complaint Management System (CCMS) with AI
+📌 Project Overview
+This is a full-stack web application designed to help companies manage customer support tickets efficiently. Before this system, complaints were handled manually via email, which was messy and slow. This project solves that problem by creating a central dashboard where users can file complaints and admins can track them from start to finish.
 
-## 🎯 Objectives
-- **Digitization:** Move from email/paper complaints to a structured database system.
-- **Transparency:** Users can track the real-time status of their complaints (Pending → Resolved).
-- **Efficiency:** Admins have a centralized panel to manage all issues.
+What makes this project unique is that I integrated Artificial Intelligence. Instead of relying on users to tell us if a problem is urgent, the system reads their complaint and decides the priority automatically.
 
-## 🚀 Current Features (Completed)
-- **Secure Authentication:** User Registration & Login system with password hashing (Security Best Practices).
-- **Role-Based Access Control (RBAC):** Distinct logic for 'Customers' and 'Admins'.
-- **Database Management:** Efficient storage using SQLite & SQLAlchemy with One-to-Many relationships.
-- **Complaint Filing:** Users can file complaints with categories (Electrical, WiFi, etc.).
-- **User Dashboard:** Customers can view the real-time status and history of their complaints.
+🎯 Objectives
+Organization: Move away from messy emails to a structured database.
 
-## 🛠 Tech Stack
-- **Backend:** Python (Flask Microframework)
-- **Database:** SQLite (Relational DB)
-- **Frontend:** HTML5, CSS3, Bootstrap 5
-- **Tools:** VS Code, Git, GitHub
+Automation: Use AI to detect urgent issues (like "Fire" or "Server Crash") instantly.
 
-## 📂 System Architecture
-1. **User** logs in and submits a complaint form.
-2. **Backend** validates data and stores it in the **Database**.
-3. **Database** links the complaint to the specific User ID.
-4. **User Dashboard** fetches and displays the complaint history dynamically.
+Security: Ensure only actual employees can access the internal dashboard.
 
-## 📌 Next Steps
-- Build Admin Dashboard (to solve complaints).
-- Add status updates (Pending → Resolved).
+Transparency: Let users see exactly when their issue is fixed.
+
+🚀 Key Features
+1. AI & Automation
+Auto-Priority Detection: I trained a machine learning model that reads the complaint description. If it detects keywords like "Smoke" or "System Failure," it automatically marks the ticket as High Priority, even if the user marked it as low.
+
+Smart Categorization: The AI also predicts if the issue is Hardware, Software, or Network related.
+
+2. Security
+Company Code: To register, you need a secret access code (INFO-2026). This prevents strangers from creating accounts.
+
+Email Restriction: The system only allows sign-ups from the company domain (@infomatic.com).
+
+3. Admin Dashboard
+Analytics: I added charts to visualize how many tickets are Pending vs. Resolved.
+
+Search Bar: Admins can quickly search for specific tickets by name or subject.
+
+Evidence: Users can upload screenshots of their errors so the admin sees the problem clearly.
+
+4. Communication
+Live Chat: There is a comment section inside every ticket where the Admin and User can talk to resolve the issue.
+
+🛠 Tech Stack
+Languages: Python, HTML, CSS, JavaScript.
+
+Frameworks: Flask (Backend), Bootstrap 5 (Frontend).
+
+Database: SQLite.
+
+AI Libraries: Scikit-Learn, Pandas (for the prediction model).
+
+📂 How It Works
+User Logs In: Enters their corporate email and the secret company code.
+
+Files Complaint: Writes a description (e.g., "The server room is overheating") and uploads a photo.
+
+AI Analysis: The Python backend uses the trained model to analyze the text. It spots the danger and saves the ticket as High Priority.
+
+Admin Resolves: The manager sees the red alert on their dashboard, chats with the user, and marks the ticket as "Resolved."
+
+✅ Project Status
+Completed. All features including the AI prediction, file uploads, and security checks are tested and working.
