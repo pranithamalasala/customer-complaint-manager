@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Knowledge Base | InfoMatic</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0b1120; color: white; }
+        .container { max-width: 900px; margin-top: 50px; }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+        .article-link { 
+            color: #3b82f6; font-weight: 600; text-decoration: none; font-size: 1.1rem; cursor: pointer;
+            display: block; padding: 5px 0;
+        }
+        .article-link:hover { text-decoration: underline; color: #60a5fa; }
+        .btn-back { color: #94a3b8; text-decoration: none; margin-bottom: 20px; display: inline-block; }
+        .btn-back:hover { color: white; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/dashboard" class="btn-back"><i class="bi bi-arrow-left me-2"></i> Back to Dashboard</a>
+        <h2 class="fw-bold mb-4">Knowledge Base</h2>
+
+        <div class="glass-card">
+            <h5 class="fw-bold mb-3 text-white"><i class="bi bi-wifi me-2"></i>Network & Connectivity</h5>
+            
+            <a class="article-link" 
+               data-bs-toggle="modal" data-bs-target="#articleModal"
+               data-title="How to connect to the office VPN"
+               data-content="1. Open Cisco AnyConnect on your laptop.<br>2. Enter server address: <b>vpn.infomatic.com</b><br>3. Use your employee ID and Windows password.<br>4. Click Connect. You should see a green checkmark.">
+               How to connect to the office VPN
+            </a>
+
+            <a class="article-link" 
+               data-bs-toggle="modal" data-bs-target="#articleModal"
+               data-title="Resetting your Wi-Fi credentials"
+               data-content="If your Wi-Fi password has expired:<br>1. Go to <b>id.infomatic.com</b><br>2. Click 'Reset Network Password'.<br>3. Forget the 'InfoMatic-Secure' network on your device.<br>4. Rejoin using the new password.">
+               Resetting your Wi-Fi credentials
+            </a>
+
+            <a class="article-link" 
+               data-bs-toggle="modal" data-bs-target="#articleModal"
+               data-title="Troubleshooting slow internet speeds"
+               data-content="If internet is slow:<br>- Disconnect from the VPN if not needed.<br>- Close bandwidth-heavy apps (Spotify, YouTube).<br>- If the issue persists, file a ticket under 'Network' category.">
+               Troubleshooting slow internet speeds
+            </a>
+        </div>
+
+        <div class="glass-card">
+            <h5 class="fw-bold mb-3 text-white"><i class="bi bi-laptop me-2"></i>Hardware Support</h5>
+            
+            <a class="article-link" 
+               data-bs-toggle="modal" data-bs-target="#articleModal"
+               data-title="Requesting a new monitor or peripheral"
+               data-content="To request hardware:<br>1. Go to Dashboard -> New Ticket.<br>2. Select Category: <b>Hardware</b>.<br>3. In the subject, write 'Request: [Item Name]'.<br>4. Approval usually takes 24-48 hours from your manager.">
+               Requesting a new monitor or peripheral
+            </a>
+
+            <a class="article-link" 
+               data-bs-toggle="modal" data-bs-target="#articleModal"
+               data-title="Printer setup guide for 2nd Floor"
+               data-content="To add the printer:<br>1. Go to System Preferences -> Printers.<br>2. Click '+ Add Printer'.<br>3. Select <b>HP-LaserJet-Floor2</b> from the list.<br>4. No drivers are needed (automatic install).">
+               Printer setup guide for 2nd Floor
+            </a>
+        </div>
+    </div>
+
+    <div class="modal fade" id="articleModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content" style="background: #1e293b; color: white; border: 1px solid rgba(255,255,255,0.1);">
+                <div class="modal-header border-bottom border-secondary border-opacity-25">
+                    <h5 class="modal-title fw-bold" id="modalTitle">Article Title</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4" style="line-height: 1.8; font-size: 1.05rem;">
+                    <p id="modalBody">Loading content...</p>
+                </div>
+                <div class="modal-footer border-top border-secondary border-opacity-25">
+                    <button type="button" class="btn btn-outline-light btn-sm" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Simple script to copy text from the link to the modal
+        var articleModal = document.getElementById('articleModal');
+        articleModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget; // Button that triggered the modal
+            var title = button.getAttribute('data-title');
+            var content = button.getAttribute('data-content');
+            
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalBody').innerHTML = content;
+        });
+    </script>
+</body>
+</html>

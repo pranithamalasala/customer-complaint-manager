@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Security Center | InfoMatic</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0b1120;
+            color: #ffffff;
+            background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+                            linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+        .container { max-width: 1000px; margin-top: 40px; }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+        .log-entry { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .log-time { color: #3b82f6; margin-right: 15px; }
+        .log-success { color: #10b981; }
+        .log-warn { color: #f59e0b; }
+        .btn-back { color: #94a3b8; text-decoration: none; display: inline-flex; align-items: center; margin-bottom: 20px; }
+        .btn-back:hover { color: white; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/admin" class="btn-back"><i class="bi bi-arrow-left me-2"></i> Back to Mission Control</a>
+        
+        <h2 class="fw-bold mb-4"><i class="bi bi-shield-lock-fill text-primary"></i> Security Operations</h2>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="glass-card text-center">
+                    <h1 class="text-success fw-bold">99.9%</h1>
+                    <p class="text-muted small">System Uptime</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="glass-card text-center">
+                    <h1 class="text-primary fw-bold">0</h1>
+                    <p class="text-muted small">Active Threats</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="glass-card text-center">
+                    <h1 class="text-warning fw-bold">12</h1>
+                    <p class="text-muted small">Failed Login Attempts</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="glass-card">
+            <h5 class="mb-3">Live Access Logs</h5>
+            
+            {% for user in users %}
+            <div class="log-entry">
+                <span class="log-time">[{{ range(10, 23) | random }}:{{ range(10, 59) | random }}:{{ range(10, 59) | random }}]</span> 
+                <span class="log-success">SUCCESS</span> User '{{ user.username }}' Authenticated via SSO.
+            </div>
+            {% endfor %}
+
+            <div class="log-entry">
+                <span class="log-time">[20:38:12]</span> <span class="log-warn">BLOCKED</span> Suspicious SQL Injection attempt blocked from IP 14.102.XX.XX
+            </div>
+            <div class="log-entry">
+                <span class="log-time">[20:30:00]</span> <span class="log-success">INFO</span> Daily Database Backup completed successfully.
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,95 +1,351 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Portal | InfoMatic</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
 
-{% block content %}
-<div class="d-flex flex-wrap justify-content-between align-items-end mb-4 gap-3">
-    <div class="col-12 col-md-8">
-        <h5 class="text-light fw-bold mb-1 text-uppercase small" style="letter-spacing: 1px; opacity: 0.7;">Overview</h5>
-        <h2 class="fw-bold text-white display-6 text-capitalize">Hello, {{ current_user.username.split('@')[0] }}</h2>
-    </div>
-    <div class="col-12 col-md-3 text-md-end">
-        <a href="{{ url_for('file_complaint') }}" class="btn btn-primary w-100 w-md-auto px-4 py-2 fw-bold" 
-           style="background-color: #2563eb; border: none; box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);">
-           + New Ticket
-        </a>
-    </div>
-</div>
+    <style>
+        :root {
+            --bg-dark: #0b1120;
+            --bg-card: rgba(30, 41, 59, 0.7);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --primary: #3b82f6;
+            --text-main: #ffffff;
+        }
 
-<div class="row mb-5 g-3">
-    <div class="col-12 col-md-4">
-        <div class="card-pro p-4 h-100">
-            <h6 class="text-white text-uppercase small fw-bold" style="opacity: 0.7;">Total Tickets</h6>
-            <h2 class="text-white fw-bold display-6 mb-0 mt-2">{{ total }}</h2>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            background-image: linear-gradient(var(--border-color) 1px, transparent 1px),
+                            linear-gradient(90deg, var(--border-color) 1px, transparent 1px);
+            background-size: 40px 40px;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            height: 100vh;
+            background: rgba(15, 23, 42, 0.9);
+            border-right: 1px solid var(--border-color);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 260px;
+            padding: 20px;
+            z-index: 1000;
+        }
+        .nav-link {
+            color: #94a3b8;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+        .nav-link:hover, .nav-link.active {
+            background: rgba(59, 130, 246, 0.1);
+            color: white;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+        .nav-link i { margin-right: 10px; font-size: 1.1rem; }
+
+        .main-content { margin-left: 260px; padding: 30px; }
+
+        .glass-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Fixed Table Text Colors */
+        .table-custom { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
+        .table-custom th { color: #cbd5e1; font-size: 0.75rem; text-transform: uppercase; padding: 15px; }
+        .table-custom td { background: rgba(30, 41, 59, 0.4); padding: 15px; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); color: white; vertical-align: middle; }
+        .table-custom tr td:first-child { border-left: 1px solid var(--border-color); border-radius: 8px 0 0 8px; }
+        .table-custom tr td:last-child { border-right: 1px solid var(--border-color); border-radius: 0 8px 8px 0; }
+
+        .btn-new { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; }
+        .btn-new:hover { background: #2563eb; color: white; }
+
+        /* --- PRO PROFILE STYLES --- */
+        .profile-header {
+            background: linear-gradient(135deg, rgba(59,130,246,0.2) 0%, rgba(16,185,129,0.2) 100%);
+            padding: 30px 20px;
+            border-radius: 12px 12px 0 0;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .avatar-glow {
+            width: 90px; height: 90px;
+            border-radius: 50%;
+            border: 3px solid #10b981;
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.5);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2.5rem; font-weight: bold; color: white;
+            background: #0f172a;
+            margin: 0 auto 15px auto;
+        }
+        .stat-box {
+            background: rgba(255,255,255,0.05);
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+        }
+        
+        /* Modal Form Inputs */
+        .form-control-dark {
+            background: #1e293b;
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+        }
+        .form-control-dark:focus {
+            background: #1e293b;
+            color: white;
+            border-color: var(--primary);
+            box-shadow: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar d-flex flex-column">
+        <div class="mb-5 px-2">
+            <h5 class="fw-bold mb-0" style="font-family: 'JetBrains Mono'; color: white;">
+                // InfoMatic
+            </h5>
+            <small class="text-white-50" style="font-size: 0.7rem;">EMPLOYEE PORTAL</small>
+        </div>
+
+        <nav class="nav flex-column flex-grow-1">
+            <a href="{{ url_for('dashboard') }}" class="nav-link active">
+                <i class="bi bi-grid-1x2"></i> Dashboard
+            </a>
+            
+            <a href="{{ url_for('history') }}" class="nav-link">
+                <i class="bi bi-clock-history"></i> Ticket History
+            </a>
+            
+            <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#profileModal">
+                <i class="bi bi-person-circle"></i> My Profile
+            </a>
+            
+            <a href="{{ url_for('knowledge') }}" class="nav-link">
+                <i class="bi bi-book"></i> Knowledge Base
+            </a>
+        </nav>
+
+        <div class="mt-auto">
+            <div class="p-3 mb-3 rounded-3" style="background: rgba(255,255,255,0.05);">
+                <div class="d-flex align-items-center">
+                    <div class="bg-success rounded-circle p-2 me-2" style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;">
+                        <span class="fw-bold text-white">{{ current_user.username[0]|upper }}</span>
+                    </div>
+                    <div style="line-height: 1.2; overflow: hidden;">
+                        <div class="fw-bold text-truncate" style="font-size: 0.9rem; max-width: 130px;">{{ current_user.username }}</div>
+                        <small class="text-white-50" style="font-size: 0.7rem;">Employee</small>
+                    </div>
+                </div>
+            </div>
+            <a href="/logout" class="btn btn-outline-danger w-100 btn-sm"><i class="bi bi-box-arrow-right"></i> Logout</a>
         </div>
     </div>
-    <div class="col-12 col-md-4">
-        <div class="card-pro p-4 h-100">
-            <h6 class="text-white text-uppercase small fw-bold" style="opacity: 0.7;">Pending</h6>
-            <h2 class="fw-bold display-6 mb-0 mt-2" style="color: #f59e0b;">{{ pending }}</h2>
-        </div>
-    </div>
-    <div class="col-12 col-md-4">
-        <div class="card-pro p-4 h-100">
-            <h6 class="text-white text-uppercase small fw-bold" style="opacity: 0.7;">Resolved</h6>
-            <h2 class="fw-bold display-6 mb-0 mt-2" style="color: #10b981;">{{ resolved }}</h2>
-        </div>
-    </div>
-</div>
 
-<div class="card-pro overflow-hidden">
-    <div class="p-4 border-bottom border-secondary" style="border-color: #334155 !important;">
-        <h5 class="text-white fw-bold mb-0">Recent Tickets</h5>
-    </div>
-    
-    <div class="table-responsive">
-        <table class="table table-dark table-hover mb-0 align-middle text-nowrap">
-            <thead style="background-color: #0f172a;">
-                <tr>
-                    <th class="ps-4 py-3 text-white small" style="opacity: 0.6;">ID</th>
-                    <th class="py-3 text-white small" style="opacity: 0.6;">SUBJECT</th>
-                    <th class="py-3 text-white small" style="opacity: 0.6;">PRIORITY</th>
-                    <th class="py-3 text-white small" style="opacity: 0.6;">CATEGORY</th>
-                    <th class="py-3 text-end pe-4 text-white small" style="opacity: 0.6;">ACTION</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for complaint in complaints %}
-                <tr style="border-bottom: 1px solid #334155;">
-                    <td class="ps-4 text-white fw-bold">#{{ complaint.id }}</td>
-                    <td class="text-white fw-bold">{{ complaint.subject }}</td>
-                    
-                    <td>
-                        {% if complaint.priority == 'High' %}
-                            <span class="badge bg-danger rounded-1 px-3">High</span>
-                        {% elif complaint.priority == 'Medium' %}
-                            <span class="badge bg-warning text-dark rounded-1 px-3">Medium</span>
-                        {% else %}
-                            <span class="badge bg-secondary rounded-1 px-3">Low</span>
-                        {% endif %}
-                    </td>
-
-                    <td><span class="badge bg-transparent border border-secondary text-light rounded-1" style="opacity: 0.9;">{{ complaint.category }}</span></td>
-                    
-                    <td class="text-end pe-4">
-                        <a href="{{ url_for('ticket_detail', id=complaint.id) }}" 
-                           class="btn btn-sm btn-outline-primary fw-bold px-4 rounded-1" 
-                           style="border-color: #334155; color: white;">
-                           {% if complaint.status == 'Resolved' %}
-                                View Resolved
-                           {% else %}
-                                View / Reply
-                           {% endif %}
-                        </a>
-                    </td>
-                </tr>
-                {% else %}
-                <tr>
-                    <td colspan="5" class="text-center py-5">
-                        <p class="text-light mb-0" style="opacity: 0.5;">No tickets found.</p>
-                    </td>
-                </tr>
+    <div class="main-content">
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show mb-4" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
                 {% endfor %}
-            </tbody>
-        </table>
+            {% endif %}
+        {% endwith %}
+        
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="fw-bold">Hello, {{ current_user.username.split('@')[0] | title }}</h2>
+                <p class="text-white-50">Here is the status of your support requests.</p>
+            </div>
+            <a href="{{ url_for('file_complaint') }}" class="btn btn-new shadow-lg">
+                <i class="bi bi-plus-lg me-2"></i>New Ticket
+            </a>
+        </div>
+
+        <div class="row g-4 mb-5">
+            <div class="col-md-4">
+                <div class="glass-card d-flex align-items-center">
+                    <div class="bg-primary bg-opacity-25 p-3 rounded-3 me-3 text-primary"><i class="bi bi-ticket-perforated fs-4"></i></div>
+                    <div>
+                        <h3 class="fw-bold mb-0 text-white">{{ total }}</h3>
+                        <small class="text-white-50">Total Tickets</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="glass-card d-flex align-items-center">
+                    <div class="bg-warning bg-opacity-25 p-3 rounded-3 me-3 text-warning"><i class="bi bi-hourglass-split fs-4"></i></div>
+                    <div>
+                        <h3 class="fw-bold mb-0 text-white">{{ pending }}</h3>
+                        <small class="text-white-50">Pending Action</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="glass-card d-flex align-items-center">
+                    <div class="bg-success bg-opacity-25 p-3 rounded-3 me-3 text-success"><i class="bi bi-check-circle fs-4"></i></div>
+                    <div>
+                        <h3 class="fw-bold mb-0 text-white">{{ resolved }}</h3>
+                        <small class="text-white-50">Resolved</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="glass-card">
+            <h5 class="fw-bold mb-4">Recent Activity</h5>
+            <table class="table-custom">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Subject</th>
+                        <th>Category</th>
+                        <th>Priority</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ticket in complaints %}
+                    <tr>
+                        <td class="fw-bold text-white">#{{ ticket.id }}</td>
+                        <td>{{ ticket.subject }}</td>
+                        <td class="text-info">{{ ticket.category }}</td>
+                        <td>
+                            {% if ticket.priority == 'High' %} <span class="badge bg-danger bg-opacity-25 text-danger border border-danger border-opacity-25">High</span>
+                            {% elif ticket.priority == 'Medium' %} <span class="badge bg-warning bg-opacity-25 text-warning border border-warning border-opacity-25">Medium</span>
+                            {% else %} <span class="badge bg-primary bg-opacity-25 text-primary border border-primary border-opacity-25">Low</span> {% endif %}
+                        </td>
+                        <td>
+                            {% if ticket.status == 'Resolved' %} <span class="text-success small fw-bold">Resolved</span>
+                            {% else %} <span class="text-warning small fw-bold">In Progress</span> {% endif %}
+                        </td>
+                        <td>
+                            <a href="{{ url_for('ticket_detail', id=ticket.id) }}" class="btn btn-sm btn-outline-light">View Details</a>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="6" class="text-center py-4 text-white-50">No tickets found. Need help? Create one!</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
-</div>
-{% endblock %}
+
+    <div class="modal fade" id="profileModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="background: #0f172a; color: white; border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; overflow: hidden;">
+                
+                <div class="profile-header">
+                    <div class="avatar-glow">
+                        {{ current_user.username[0]|upper }}
+                    </div>
+                    <h4 class="fw-bold mb-1">{{ current_user.username.split('@')[0] | title }}</h4>
+                    <span class="badge bg-primary bg-opacity-25 text-primary border border-primary border-opacity-25 rounded-pill px-3">
+                        Active Employee
+                    </span>
+                </div>
+
+                <div class="modal-body p-4">
+                    <div class="row g-3 mb-4">
+                        <div class="col-6">
+                            <div class="stat-box">
+                                <small class="text-muted d-block text-uppercase" style="font-size: 0.65rem;">Employee ID</small>
+                                <span class="fw-bold font-monospace">EMP-{{ current_user.id + 1000 }}</span>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="stat-box">
+                                <small class="text-muted d-block text-uppercase" style="font-size: 0.65rem;">Department</small>
+                                <span class="fw-bold">Engineering</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-outline-light w-50 btn-sm" data-bs-toggle="modal" data-bs-target="#editModal">
+                            <i class="bi bi-pencil me-2"></i>Edit
+                        </button>
+                        <button class="btn btn-outline-warning w-50 btn-sm" data-bs-toggle="modal" data-bs-target="#passwordModal">
+                            <i class="bi bi-key me-2"></i>Password
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="background: #1e293b; color: white; border: 1px solid rgba(255,255,255,0.1);">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title fw-bold">Edit Profile</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-toggle="modal" data-bs-target="#profileModal"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="/update_profile" method="POST">
+                        <div class="mb-3">
+                            <label class="form-label text-muted small">Update Email / Username</label>
+                            <input type="text" name="username" value="{{ current_user.username }}" class="form-control form-control-dark" required>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-outline-secondary w-50" data-bs-toggle="modal" data-bs-target="#profileModal">Cancel</button>
+                            <button type="submit" class="btn btn-primary w-50">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="passwordModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="background: #1e293b; color: white; border: 1px solid rgba(255,255,255,0.1);">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title fw-bold text-warning">Change Password</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-toggle="modal" data-bs-target="#profileModal"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="/change_password" method="POST">
+                        <div class="mb-3">
+                            <label class="form-label text-muted small">Current Password</label>
+                            <input type="password" name="current_password" class="form-control form-control-dark" required>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label text-muted small">New Password</label>
+                            <input type="password" name="new_password" class="form-control form-control-dark" required>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-outline-secondary w-50" data-bs-toggle="modal" data-bs-target="#profileModal">Cancel</button>
+                            <button type="submit" class="btn btn-warning w-50">Update Password</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>All Tickets | InfoMatic</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0b1120;
+            color: #ffffff;
+            background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+                            linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+        .container { max-width: 1200px; margin-top: 40px; }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 25px;
+        }
+        /* Table Styles */
+        .table-custom { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
+        .table-custom th { color: #94a3b8; font-size: 0.8rem; text-transform: uppercase; padding: 15px; }
+        .table-custom td { background: rgba(30, 41, 59, 0.4); padding: 15px; border-top: 1px solid rgba(255,255,255,0.1); border-bottom: 1px solid rgba(255,255,255,0.1); color: #e2e8f0; vertical-align: middle; }
+        .table-custom tr td:first-child { border-left: 1px solid rgba(255,255,255,0.1); border-radius: 8px 0 0 8px; }
+        .table-custom tr td:last-child { border-right: 1px solid rgba(255,255,255,0.1); border-radius: 0 8px 8px 0; }
+        
+        .badge-custom { padding: 6px 12px; border-radius: 50px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; }
+        .badge-high { background: rgba(239, 68, 68, 0.2); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.3); }
+        .badge-medium { background: rgba(245, 158, 11, 0.2); color: #fcd34d; border: 1px solid rgba(245, 158, 11, 0.3); }
+        .badge-low { background: rgba(59, 130, 246, 0.2); color: #93c5fd; border: 1px solid rgba(59, 130, 246, 0.3); }
+
+        .btn-back { color: #94a3b8; text-decoration: none; display: inline-flex; align-items: center; margin-bottom: 20px; }
+        .btn-back:hover { color: white; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/admin" class="btn-back"><i class="bi bi-arrow-left me-2"></i> Back to Mission Control</a>
+        
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="fw-bold">Master Ticket Registry</h2>
+                <p class="text-muted">Viewing all {{ complaints|length }} tickets in the database.</p>
+            </div>
+            <button class="btn btn-primary btn-sm"><i class="bi bi-filter"></i> Filter View</button>
+        </div>
+
+        <div class="glass-card">
+            <table class="table-custom">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Subject</th>
+                        <th>User</th>
+                        <th>Priority</th>
+                        <th>Category</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ticket in complaints %}
+                    <tr>
+                        <td class="text-muted fw-bold">#{{ ticket.id }}</td>
+                        <td>{{ ticket.subject }}</td>
+                        <td class="small text-muted">{{ ticket.user.username }}</td>
+                        <td>
+                            {% if ticket.priority == 'High' %} <span class="badge-custom badge-high">High</span>
+                            {% elif ticket.priority == 'Medium' %} <span class="badge-custom badge-medium">Medium</span>
+                            {% else %} <span class="badge-custom badge-low">Low</span> {% endif %}
+                        </td>
+                        <td><i class="bi bi-tag me-1"></i> {{ ticket.category }}</td>
+                        <td>
+                            {% if ticket.status == 'Resolved' %} <span class="text-success small fw-bold">Resolved</span>
+                            {% else %} <span class="text-warning small fw-bold">Pending</span> {% endif %}
+                        </td>
+                        <td>
+                            <a href="{{ url_for('ticket_detail', id=ticket.id) }}" class="btn btn-sm btn-outline-light">Open</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

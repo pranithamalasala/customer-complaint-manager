@@ -1,120 +1,480 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InfoMatic Mission Control</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-{% block content %}
-<div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
-    <div>
-        <h5 class="text-light fw-bold mb-1 text-uppercase small" style="opacity: 0.7;">Admin Panel</h5>
-        <h1 class="fw-bold text-white display-6">Manager Dashboard</h1>
-    </div>
-    <div class="d-flex gap-2">
-        <form method="GET" action="{{ url_for('admin_dashboard') }}" class="d-flex">
-            <input type="text" name="q" class="form-control-pro form-control-sm" placeholder="Search tickets..." style="border-top-right-radius: 0; border-bottom-right-radius: 0;">
-            <button type="submit" class="btn btn-primary btn-sm" style="border-top-left-radius: 0; border-bottom-left-radius: 0;">🔍</button>
-        </form>
-        <span class="badge bg-primary px-4 py-2 rounded-1 fw-bold d-flex align-items-center">ADMIN</span>
-    </div>
-</div>
-
-<div class="row mb-5 g-3">
-    <div class="col-6 col-md-3">
-        <div class="card-pro p-3 text-center h-100">
-            <h6 class="text-white small fw-bold" style="opacity: 0.7;">Total</h6>
-            <h2 class="text-white fw-bold display-6 mb-0">{{ total }}</h2>
-        </div>
-    </div>
-    <div class="col-6 col-md-3">
-        <div class="card-pro p-3 text-center h-100">
-            <h6 class="text-white small fw-bold" style="opacity: 0.7;">Pending</h6>
-            <h2 class="fw-bold display-6 mb-0" style="color: #f59e0b;">{{ pending }}</h2>
-        </div>
-    </div>
-    <div class="col-6 col-md-3">
-        <div class="card-pro p-3 text-center h-100" style="border: 1px solid rgba(239, 68, 68, 0.5); background: rgba(239, 68, 68, 0.1);">
-            <h6 class="text-danger small fw-bold">Priority</h6>
-            <h2 class="text-danger fw-bold display-6 mb-0">{{ high_priority }}</h2>
-        </div>
-    </div>
-    <div class="col-6 col-md-3">
-        <div class="card-pro p-3 text-center h-100">
-            <h6 class="text-white small fw-bold" style="opacity: 0.7;">Resolved</h6>
-            <h2 class="fw-bold display-6 mb-0" style="color: #10b981;">{{ resolved }}</h2>
-        </div>
-    </div>
-</div>
-
-<div class="row g-4">
-    <div class="col-12 col-lg-8">
-        <div class="card-pro overflow-hidden h-100">
-            <div class="p-4 border-bottom border-secondary" style="border-color: #334155 !important;">
-                 <h5 class="text-white fw-bold mb-0">Global Ticket Queue</h5>
-            </div>
-            <div class="table-responsive">
-                <table class="table table-dark table-hover mb-0 align-middle text-nowrap">
-                    <thead style="background-color: #0f172a;">
-                        <tr>
-                            <th class="ps-4 py-3 text-white small" style="opacity: 0.6;">ID</th>
-                            <th class="py-3 text-white small" style="opacity: 0.6;">ISSUE</th>
-                            <th class="py-3 text-white small" style="opacity: 0.6;">PRIORITY</th>
-                            <th class="py-3 text-white small" style="opacity: 0.6;">CATEGORY</th>
-                            <th class="py-3 text-end pe-4 text-white small" style="opacity: 0.6;">ACTION</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for complaint in complaints %}
-                        <tr style="border-bottom: 1px solid #334155; {% if complaint.priority == 'High' %} background-color: rgba(239, 68, 68, 0.15) !important; {% endif %}">
-                            <td class="ps-4 text-white fw-bold">#{{ complaint.id }}</td>
-                            <td class="text-white">{{ complaint.subject }}</td>
-                            <td>
-                                {% if complaint.priority == 'High' %} <span class="badge bg-danger">High</span>
-                                {% elif complaint.priority == 'Medium' %} <span class="badge bg-warning text-dark">Medium</span>
-                                {% else %} <span class="badge bg-secondary">Low</span> {% endif %}
-                            </td>
-                            <td><span class="badge border border-secondary text-light">{{ complaint.category }}</span></td>
-                            <td class="text-end pe-4">
-                                <a href="{{ url_for('ticket_detail', id=complaint.id) }}" class="btn btn-sm btn-primary fw-bold px-3">View</a>
-                            </td>
-                        </tr>
-                        {% else %}
-                        <tr><td colspan="5" class="text-center py-5"><p class="text-light mb-0" style="opacity: 0.5;">No tickets found.</p></td></tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-12 col-lg-4">
-        <div class="card-pro p-4 h-100 d-flex flex-column align-items-center justify-content-center">
-            <h6 class="text-white fw-bold mb-3">Categories Overview</h6>
-            <div style="height: 250px; width: 100%;">
-                <canvas id="categoryChart"></canvas>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-    const ctx = document.getElementById('categoryChart').getContext('2d');
-    const categoryData = {{ category_counts | tojson }}; // Pass Python dict to JS
-    
-    new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-            labels: Object.keys(categoryData),
-            datasets: [{
-                data: Object.values(categoryData),
-                backgroundColor: ['#2563eb', '#f59e0b', '#10b981', '#ef4444', '#8b5cf6'],
-                borderWidth: 0
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: { position: 'bottom', labels: { color: '#cbd5e1' } }
-            }
+    <style>
+        :root {
+            --bg-dark: #0b1120;
+            --bg-card: rgba(30, 41, 59, 0.7);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --primary: #3b82f6;
+            --danger: #ef4444;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
         }
-    });
-</script>
-{% endblock %}
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            overflow-x: hidden;
+            background-image: 
+                linear-gradient(var(--border-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--border-color) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        /* --- Sidebar Styling --- */
+        .sidebar {
+            height: 100vh;
+            background: rgba(15, 23, 42, 0.9);
+            border-right: 1px solid var(--border-color);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 260px;
+            padding: 20px;
+            z-index: 1000;
+        }
+        .nav-link {
+            color: var(--text-muted);
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+        .nav-link:hover, .nav-link.active {
+            background: rgba(59, 130, 246, 0.1);
+            color: white;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+        .nav-link i { margin-right: 10px; font-size: 1.1rem; }
+
+        /* --- Main Content Area --- */
+        .main-content {
+            margin-left: 260px;
+            padding: 30px;
+        }
+
+        /* --- Glass Cards --- */
+        .glass-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        /* --- Stat Boxes --- */
+        .stat-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .stat-value { font-size: 2rem; font-weight: 700; font-family: 'JetBrains Mono', monospace; }
+        .stat-label { color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; }
+        .stat-icon { 
+            font-size: 2rem; 
+            opacity: 0.8;
+            padding: 10px;
+            border-radius: 12px;
+        }
+
+        /* --- Table Styling --- */
+        .table-dark-custom {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 8px;
+        }
+        .table-dark-custom th {
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            padding: 15px;
+            border: none;
+        }
+        .table-dark-custom td {
+            background: rgba(30, 41, 59, 0.4);
+            padding: 15px;
+            vertical-align: middle;
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+            color: #e2e8f0;
+        }
+        .table-dark-custom tr td:first-child { border-left: 1px solid var(--border-color); border-radius: 8px 0 0 8px; }
+        .table-dark-custom tr td:last-child { border-right: 1px solid var(--border-color); border-radius: 0 8px 8px 0; }
+        
+        /* Badges */
+        .badge-custom {
+            padding: 6px 12px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .badge-high { background: rgba(239, 68, 68, 0.2); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.3); }
+        .badge-medium { background: rgba(245, 158, 11, 0.2); color: #fcd34d; border: 1px solid rgba(245, 158, 11, 0.3); }
+        .badge-low { background: rgba(59, 130, 246, 0.2); color: #93c5fd; border: 1px solid rgba(59, 130, 246, 0.3); }
+
+        /* Action Button */
+        .btn-action {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+        }
+        .btn-action:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="sidebar d-flex flex-column">
+        <div class="mb-5 px-2">
+            <h5 class="fw-bold mb-0" style="font-family: 'JetBrains Mono'; color: white;">
+                // InfoMatic
+            </h5>
+            <small class="text-muted" style="font-size: 0.7rem;">ADMINISTRATION CONSOLE</small>
+        </div>
+
+        <nav class="nav flex-column flex-grow-1">
+            <a href="{{ url_for('admin_dashboard') }}" class="nav-link active">
+                <i class="bi bi-speedometer2"></i> Dashboard
+            </a>
+
+            <a href="{{ url_for('admin_tickets') }}" class="nav-link">
+                <i class="bi bi-ticket-detailed"></i> All Tickets
+            </a>
+
+            <a href="{{ url_for('admin_users') }}" class="nav-link">
+                <i class="bi bi-people"></i> Users
+            </a>
+
+            <a href="{{ url_for('admin_analytics') }}" class="nav-link">
+                <i class="bi bi-bar-chart"></i> Analytics
+            </a>
+
+            <a href="{{ url_for('admin_security') }}" class="nav-link">
+                <i class="bi bi-shield-lock"></i> Security
+            </a>
+        </nav>
+
+        <div class="mt-auto">
+            <div class="p-3 mb-3 rounded-3" style="background: rgba(255,255,255,0.05);">
+                <div class="d-flex align-items-center">
+                    <div class="bg-primary rounded-circle p-2 me-2" style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;">
+                        <span class="fw-bold">OM</span>
+                    </div>
+                    <div style="line-height: 1.2;">
+                        <div class="fw-bold" style="font-size: 0.9rem;">Omkar Admin</div>
+                        <small class="text-success" style="font-size: 0.7rem;">● Online</small>
+                    </div>
+                </div>
+            </div>
+            <a href="/logout" class="btn btn-outline-danger w-100 btn-sm"><i class="bi bi-box-arrow-right"></i> Logout</a>
+        </div>
+    </div>
+
+    <div class="main-content">
+        
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h3 class="fw-bold mb-1">Mission Control</h3>
+                <p class="text-muted small mb-0">System Overview & Incident Management</p>
+            </div>
+            <div class="d-flex gap-3">
+                <form class="d-flex" action="/admin">
+                    <input class="form-control form-control-sm bg-dark text-light border-secondary" name="q" type="search" placeholder="Search tickets..." style="width: 250px;">
+                    <button class="btn btn-sm btn-outline-primary ms-2" type="submit"><i class="bi bi-search"></i></button>
+                </form>
+                <button id="btnExport" class="btn btn-sm btn-primary"><i class="bi bi-cloud-download"></i> Export Report</button>
+            </div>
+        </div>
+
+        <div class="row g-4 mb-4">
+            <div class="col-md-3">
+                <div class="glass-card stat-card">
+                    <div>
+                        <div class="stat-label">Total Tickets</div>
+                        <div class="stat-value">{{ total }}</div>
+                    </div>
+                    <div class="stat-icon bg-primary bg-opacity-25 text-primary">
+                        <i class="bi bi-grid"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="glass-card stat-card">
+                    <div>
+                        <div class="stat-label">Pending Action</div>
+                        <div class="stat-value text-warning">{{ pending }}</div>
+                    </div>
+                    <div class="stat-icon bg-warning bg-opacity-25 text-warning">
+                        <i class="bi bi-hourglass-split"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="glass-card stat-card">
+                    <div>
+                        <div class="stat-label">Critical / High</div>
+                        <div class="stat-value text-danger">{{ high_priority }}</div>
+                    </div>
+                    <div class="stat-icon bg-danger bg-opacity-25 text-danger">
+                        <i class="bi bi-exclamation-triangle"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="glass-card stat-card">
+                    <div>
+                        <div class="stat-label">Resolved</div>
+                        <div class="stat-value text-success">{{ resolved }}</div>
+                    </div>
+                    <div class="stat-icon bg-success bg-opacity-25 text-success">
+                        <i class="bi bi-check-circle"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            
+            <div class="col-lg-8">
+                <div class="glass-card" style="min-height: 400px;">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="fw-bold mb-0">Live Ticket Feed</h5>
+                        <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25">
+                            <span class="spinner-grow spinner-grow-sm me-1" style="width: 6px; height: 6px;"></span> Live Updates
+                        </span>
+                    </div>
+
+                    <table class="table-dark-custom">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Subject</th>
+                                <th>Priority</th>
+                                <th>Category</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for ticket in complaints %}
+                            <tr>
+                                <td class="text-muted fw-bold">#{{ ticket.id }}</td>
+                                <td>{{ ticket.subject }}</td>
+                                <td>
+                                    {% if ticket.priority == 'High' %}
+                                        <span class="badge-custom badge-high">High</span>
+                                    {% elif ticket.priority == 'Medium' %}
+                                        <span class="badge-custom badge-medium">Medium</span>
+                                    {% else %}
+                                        <span class="badge-custom badge-low">Low</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <span class="text-muted"><i class="bi bi-tag-fill me-1"></i> {{ ticket.category }}</span>
+                                </td>
+                                <td>
+                                    {% if ticket.status == 'Resolved' %}
+                                        <span class="text-success small fw-bold"><i class="bi bi-check2-all"></i> Resolved</span>
+                                    {% else %}
+                                        <span class="text-warning small fw-bold"><i class="bi bi-clock"></i> Pending</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('ticket_detail', id=ticket.id) }}" class="btn-action">
+                                        View
+                                    </a>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="6" class="text-center py-5 text-muted">No tickets found. Good job!</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                
+                <div class="glass-card mb-4">
+                    <h5 class="fw-bold mb-3">Incident Categories</h5>
+                    <canvas id="categoryChart" style="max-height: 250px;"></canvas>
+                </div>
+
+                <div class="glass-card">
+                    <h5 class="fw-bold mb-3">System Health</h5>
+                    
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between small mb-1">
+                            <span>AI Model Latency</span>
+                            <span class="text-success">24ms</span>
+                        </div>
+                        <div class="progress" style="height: 5px; background: rgba(255,255,255,0.1);">
+                            <div class="progress-bar bg-success" role="progressbar" style="width: 15%"></div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between small mb-1">
+                            <span>Database Load</span>
+                            <span class="text-primary">45%</span>
+                        </div>
+                        <div class="progress" style="height: 5px; background: rgba(255,255,255,0.1);">
+                            <div class="progress-bar bg-primary" role="progressbar" style="width: 45%"></div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 pt-3 border-top border-secondary border-opacity-25">
+                        <button id="btnRestart" class="btn btn-outline-light w-100 btn-sm mb-2"><i class="bi bi-arrow-repeat"></i> Restart Services</button>
+                        <button id="btnLogs" class="btn btn-outline-warning w-100 btn-sm"><i class="bi bi-bug"></i> View Error Logs</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <div class="modal fade" id="logModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content" style="background: #0f172a; border: 1px solid rgba(255,255,255,0.1); color: #fff;">
+                <div class="modal-header" style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                    <h5 class="modal-title" style="font-family: 'JetBrains Mono';">
+                        <i class="bi bi-terminal-fill text-primary me-2"></i>System Diagnostic Console
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body bg-black p-0">
+                    <pre id="logContent" class="p-3 m-0 text-success" style="font-family: 'JetBrains Mono'; font-size: 0.85rem; line-height: 1.5; overflow-x: auto;"></pre>
+                </div>
+                <div class="modal-footer" style="border-top: 1px solid rgba(255,255,255,0.1);">
+                    <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Close Terminal</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        const ctx = document.getElementById('categoryChart').getContext('2d');
+        const categoryChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: [{% for cat in category_counts %}"{{ cat }}",{% endfor %}],
+                datasets: [{
+                    data: [{% for cat, count in category_counts.items() %}{{ count }},{% endfor %}],
+                    backgroundColor: ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'bottom', labels: { color: '#94a3b8' } }
+                }
+            }
+        });
+    </script>
+
+    <script>
+        // 1. EXPORT REPORT (Triggers Python Backend)
+        const exportBtn = document.getElementById('btnExport');
+        if (exportBtn) {
+            exportBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                // Redirect to the backend route to download CSV
+                window.location.href = "{{ url_for('export_data') }}";
+            });
+        }
+
+        // 2. RESTART SERVICES (Calls Python to reload AI Models)
+        const restartBtn = document.getElementById('btnRestart');
+        if (restartBtn) {
+            restartBtn.addEventListener('click', function() {
+                const btn = this;
+                const originalText = btn.innerHTML;
+                
+                // Show loading spinner
+                btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Reloading AI...';
+                btn.classList.add('disabled');
+
+                // Call Python Backend
+                fetch("{{ url_for('restart_service') }}", { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        alert("✅ " + data.message);
+                    } else {
+                        alert("❌ Error: " + data.message);
+                    }
+                    btn.innerHTML = originalText;
+                    btn.classList.remove('disabled');
+                })
+                .catch(error => {
+                    alert("Server Error: " + error);
+                    btn.innerHTML = originalText;
+                    btn.classList.remove('disabled');
+                });
+            });
+        }
+
+        // 3. VIEW LOGS (Opens the Cool Modal)
+        const logBtn = document.getElementById('btnLogs');
+        if (logBtn) {
+            logBtn.addEventListener('click', function() {
+                const btn = this;
+                const originalText = btn.innerHTML;
+                
+                btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Fetching...';
+                
+                // Fetch Logs from Python
+                fetch("{{ url_for('get_logs') }}")
+                .then(response => response.json())
+                .then(data => {
+                    // Put logs into the modal
+                    document.getElementById('logContent').textContent = data.logs;
+                    
+                    // Show the modal
+                    var myModal = new bootstrap.Modal(document.getElementById('logModal'));
+                    myModal.show();
+                    
+                    btn.innerHTML = originalText;
+                })
+                .catch(err => {
+                    alert("Connection Error");
+                    btn.innerHTML = originalText;
+                });
+            });
+        }
+    </script>
+</body>
+</html>

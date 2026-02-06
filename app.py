@@ -1,5 +1,8 @@
 import os
-import pickle  # <--- NEW: For loading the AI brain
+import pickle 
+import csv
+import io
+from flask import make_response, jsonify # <--- NEW: For loading the AI brain
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
@@ -86,6 +89,105 @@ def home():
     if current_user.is_authenticated:
         return redirect(url_for('admin_dashboard') if current_user.is_admin else url_for('dashboard'))
     return redirect(url_for('login'))
+# --- REAL BACKEND ACTIONS ---
+
+@app.route('/admin/export')
+@login_required
+def export_data():
+    if not current_user.is_admin:
+        return redirect(url_for('dashboard'))
+
+    # 1. Get all tickets from the Real Database
+    complaints = Complaint.query.all()
+
+    # 2. Create a CSV in memory
+    si = io.StringIO()
+    cw = csv.writer(si)
+    # Write Header
+    cw.writerow(['ID', 'User', 'Subject', 'Category', 'Priority', 'Status', 'Date'])
+    # Write Rows
+    for c in complaints:
+        cw.writerow([c.id, c.user.username, c.subject, c.category, c.priority, c.status, datetime.utcnow()])
+
+    # 3. Create the real file response
+    output = make_response(si.getvalue())
+    output.headers["Content-Disposition"] = "attachment; filename=InfoMatic_Real_Report.csv"
+    output.headers["Content-type"] = "text/csv"
+    return output
+
+@app.route('/admin/restart_service', methods=['POST'])
+@login_required
+def restart_service():
+    if not current_user.is_admin:
+        return jsonify({'status': 'error', 'message': 'Unauthorized'}), 403
+    
+    # REAL WORK: Reload the AI Models from disk
+    global ai_category_model, ai_priority_model
+    try:
+        with open("model.pkl", "rb") as f:
+            models = pickle.load(f)
+            ai_category_model = models['category_model']
+            ai_priority_model = models['priority_model']
+        print(">>> SYSTEM RESTART: AI Models Reloaded Successfully.")
+        return jsonify({'status': 'success', 'message': 'AI Models & Database Connection Refreshed.'})
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)})
+
+@app.route('/admin/get_logs')
+@login_required
+def get_logs():
+    if not current_user.is_admin:
+        return jsonify({'error': 'Unauthorized'}), 403
+        
+    # REAL WORK: Check System Health
+    # 1. Check Database
+    try:
+        user_count = User.query.count()
+        db_status = "Connected (Read/Write OK)"
+    except:
+        db_status = "Connection Error!"
+
+    # 2. Check AI Model
+    ai_status = "Active" if ai_category_model else "Offline (Model file missing)"
+
+    # 3. Generate Real Log Report
+    real_logs = f"""
+    SYSTEM DIAGNOSTIC REPORT
+    -------------------------
+    Timestamp: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+    User: {current_user.username}
+    
+    [STATUS] Database: {db_status}
+    [STATUS] User Count: {user_count} Users Registered
+    [STATUS] AI Engine: {ai_status}
+    [INFO]  Upload Folder: {app.config['UPLOAD_FOLDER']}
+    """
+    return jsonify({'logs': real_logs})
+@app.route('/admin/create_user', methods=['POST'])
+@login_required
+def admin_create_user():
+    if not current_user.is_admin:
+        return redirect(url_for('dashboard'))
+    
+    username = request.form.get('username')
+    password = request.form.get('password')
+    role = request.form.get('role') # 'admin' or 'employee'
+    
+    if User.query.filter_by(username=username).first():
+        flash('Username already exists.', 'warning')
+        return redirect(url_for('admin_users'))
+    
+    # Create new user
+    hashed_pw = generate_password_hash(password, method='pbkdf2:sha256')
+    is_admin = True if role == 'admin' else False
+    
+    new_user = User(username=username, password=hashed_pw, is_admin=is_admin, joined_date=datetime.utcnow())
+    db.session.add(new_user)
+    db.session.commit()
+    
+    flash(f'User {username} created successfully!', 'success')
+    return redirect(url_for('admin_users'))
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -99,6 +201,89 @@ def login():
         else:
             flash('Invalid credentials.', 'danger')
     return render_template('login.html')
+@app.route('/admin/users')
+@login_required
+def admin_users():
+    # Security Check: Only Admins allowed
+    if not current_user.is_admin:
+        flash('Access Denied.', 'danger')
+        return redirect(url_for('dashboard'))
+    
+    # Fetch ALL users from the database
+    all_users = User.query.all()
+    
+    return render_template('users.html', users=all_users)
+# --- NEW ROUTES FOR ANALYTICS & SECURITY ---
+
+@app.route('/admin/analytics')
+@login_required
+def admin_analytics():
+    if not current_user.is_admin:
+        return redirect(url_for('dashboard'))
+    return render_template('analytics.html')
+
+@app.route('/admin/security')
+@login_required
+def admin_security():
+    if not current_user.is_admin:
+        return redirect(url_for('dashboard'))
+    
+    # Fetch the last 5 users to show in the "Live Logs"
+    recent_users = User.query.order_by(User.id.desc()).limit(5).all()
+    
+    return render_template('security.html', users=recent_users)
+@app.route('/history')
+@login_required
+def history():
+    my_complaints = Complaint.query.filter_by(user_id=current_user.id).all()
+    return render_template('history.html', complaints=my_complaints)
+
+@app.route('/knowledge')
+@login_required
+def knowledge():
+    return render_template('knowledge.html')
+@app.route('/update_profile', methods=['POST'])
+@login_required
+def update_profile():
+    new_username = request.form.get('username')
+    
+    # Check if username is taken
+    existing_user = User.query.filter_by(username=new_username).first()
+    if existing_user and existing_user.id != current_user.id:
+        flash('Username already taken.', 'danger')
+        return redirect(url_for('dashboard'))
+    
+    # Update DB
+    current_user.username = new_username
+    db.session.commit()
+    flash('Profile updated successfully!', 'success')
+    return redirect(url_for('dashboard'))
+
+@app.route('/change_password', methods=['POST'])
+@login_required
+def change_password():
+    current_pass = request.form.get('current_password')
+    new_pass = request.form.get('new_password')
+    
+    # Verify old password
+    if not check_password_hash(current_user.password, current_pass):
+        flash('Incorrect current password.', 'danger')
+        return redirect(url_for('dashboard'))
+    
+    # Update Password
+    current_user.password = generate_password_hash(new_pass, method='pbkdf2:sha256')
+    db.session.commit()
+    flash('Password changed successfully!', 'success')
+    return redirect(url_for('dashboard'))
+@app.route('/admin/tickets')
+@login_required
+def admin_tickets():
+    if not current_user.is_admin:
+        return redirect(url_for('dashboard'))
+    
+    # Get ALL tickets
+    all_complaints = Complaint.query.all()
+    return render_template('tickets.html', complaints=all_complaints)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
