@@ -130,7 +130,6 @@ pyasn1==0.6.1
 pyasn1_modules==0.4.2
 pycparser==2.23
 pydantic==2.11.9
-pydantic_core==2.33.2
 pydeck==0.9.1
 pyparsing==3.2.4
 pypdf==6.1.1
@@ -144,7 +143,6 @@ python-magic==0.4.27
 python-oxmsg==0.0.2
 python-socketio==5.13.0
 pytz==2025.2
-pywin32==311
 PyYAML==6.0.3
 qdrant-client==1.15.1
 RapidFuzz==3.14.1
