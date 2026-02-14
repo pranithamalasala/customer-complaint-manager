@@ -1,55 +1,173 @@
-# 🏢 Customer Complaint Management System (CCMS) with AI
 
-## 📌 Project Overview
-This is a full-stack web application designed to help companies manage customer support tickets efficiently. Before this system, complaints were handled manually via email, which was messy and slow. This project solves that problem by creating a central dashboard where users can file complaints and admins can track them from start to finish.
 
-What makes this project unique is that I integrated **Artificial Intelligence**. Instead of relying on users to tell us if a problem is urgent, the system reads their complaint and decides the priority automatically.
+🏢 AI-Based Customer Complaint Management System (CCMS)
+🌐 Live Demo
 
----
+Deployed on Render:
+https://customer-complaint-manager.onrender.com
+Admin Login (For Evaluation):
 
-## 🎯 Objectives
-* **Organization:** Move away from messy emails to a structured database.
-* **Automation:** Use AI to detect urgent issues (like "Fire" or "Server Crash") instantly.
-* **Security:** Ensure only actual employees can access the internal dashboard.
-* **Transparency:** Let users see exactly when their issue is fixed.
+Username: admin@infomatic.com
+Password: admin123
+## 📸 Screenshots
 
----
+### 🔐 Login Page
+<img width="1884" height="849" alt="image" src="https://github.com/user-attachments/assets/41430041-bfdf-4c9f-8527-31db5e1ba180" />
 
-## 🚀 Key Features
 
-### 1. AI & Automation
-* **Auto-Priority Detection:** I trained a machine learning model that reads the complaint description. If it detects keywords like "Smoke" or "System Failure," it automatically marks the ticket as **High Priority**, even if the user marked it as low.
-* **Smart Categorization:** The AI also predicts if the issue is *Hardware*, *Software*, or *Network* related.
+### 📊 Admin Dashboard
+<img width="1909" height="855" alt="image" src="https://github.com/user-attachments/assets/7bf79649-2aaf-4e1b-9f8e-358f859a4610" />
 
-### 2. Security
-* **Company Code:** To register, you need a secret access code (`INFO-2026`). This prevents strangers from creating accounts.
-* **Email Restriction:** The system only allows sign-ups from the company domain (`@infomatic.com`).
 
-### 3. Admin Dashboard
-* **Analytics:** I added charts to visualize how many tickets are *Pending* vs. *Resolved*.
-* **Search Bar:** Admins can quickly search for specific tickets by name or subject.
-* **Evidence:** Users can upload screenshots of their errors so the admin sees the problem clearly.
+### 📝 File Complaint Page
+<img width="1380" height="812" alt="image" src="https://github.com/user-attachments/assets/11c5f924-4635-4fb6-a202-d7be985bede8" />
 
-### 4. Communication
-* **Live Chat:** There is a comment section inside every ticket where the Admin and User can talk to resolve the issue.
 
----
 
-## 🛠 Tech Stack
-* **Languages:** Python, HTML, CSS, JavaScript.
-* **Frameworks:** Flask (Backend), Bootstrap 5 (Frontend).
-* **Database:** SQLite.
-* **AI Libraries:** Scikit-Learn, Pandas (for the prediction model).
+📌 Project Overview
 
----
+This is a full-stack web application designed to help organizations manage customer support tickets efficiently. Traditionally, complaints were handled manually through emails, which was slow and unstructured.
 
-## 📂 How It Works
-1.  **User Logs In:** Enters their corporate email and the secret company code.
-2.  **Files Complaint:** Writes a description (e.g., *"The server room is overheating"*) and uploads a photo.
-3.  **AI Analysis:** The Python backend uses the trained model to analyze the text. It spots the danger and saves the ticket as **High Priority**.
-4.  **Admin Resolves:** The manager sees the red alert on their dashboard, chats with the user, and marks the ticket as "Resolved."
+This system provides a centralized dashboard where employees can submit complaints, and administrators can monitor, prioritize, and resolve them efficiently.
 
----
+What makes this project unique is the integration of Artificial Intelligence. Instead of relying only on user input, the system automatically analyzes the complaint text and predicts both:
 
-## ✅ Project Status
-**Completed.** All features including the AI prediction, file uploads, and security checks are tested and working.
+🔴 Priority Level
+
+🏷 Category Type
+
+🎯 Objectives
+
+Organization: Replace manual email handling with a structured database system.
+
+Automation: Use AI to automatically detect urgent issues.
+
+Security: Restrict access to authorized company employees only.
+
+Transparency: Allow users to track the status of their complaints in real-time.
+
+🚀 Key Features
+🤖 1. AI & Automation
+
+Auto-Priority Detection: Machine learning model detects critical keywords like "fire", "server crash", or "system failure" and automatically marks the complaint as High Priority.
+
+Smart Categorization: AI predicts whether the issue belongs to Hardware, Software, or Network categories.
+
+🔐 2. Security
+
+Company Access Code: Registration requires a secret code (INFO-2026).
+
+Domain Restriction: Only corporate emails (@infomatic.com) are allowed to register.
+
+Role-Based Access: Separate dashboards for Admin and Employees.
+
+📊 3. Admin Dashboard
+
+Complaint statistics (Pending vs Resolved).
+
+High-priority ticket alerts.
+
+Search functionality for quick filtering.
+
+CSV export of complaint reports.
+
+Screenshot uploads for issue evidence.
+
+💬 4. Communication System
+
+Each ticket includes a comment section where Admin and User can communicate directly to resolve issues faster.
+## 📁 Project Structure
+
+app.py
+requirements.txt
+templates/
+static/
+model.pkl
+
+
+🛠 Tech Stack
+
+Backend:
+
+Python
+
+Flask
+
+SQLAlchemy
+
+Frontend:
+
+HTML
+
+CSS
+
+Bootstrap 5
+
+Database:
+
+PostgreSQL (Production - Render)
+
+SQLite (Local Development)
+
+AI & Data Science:
+
+Scikit-learn
+
+Pandas
+
+Pickle
+
+Deployment:
+
+Render (Cloud Hosting)
+
+Gunicorn (WSGI Server)
+## ⚙️ Local Setup Instructions
+
+1. Clone the repository:
+   git clone https://github.com/pranithamalasala/customer-complaint-manager.git
+
+2. Navigate into the folder:
+   cd customer-complaint-manager
+
+3. Create a virtual environment (recommended):
+   python -m venv venv
+   source venv/bin/activate   # On Windows use: venv\Scripts\activate
+
+4. Install dependencies:
+   pip install -r requirements.txt
+
+5. Run the application:
+   python app.py
+
+6. Open in browser:
+   http://127.0.0.1:5000
+
+
+
+📂 System Workflow
+
+User Login: Employee logs in using company email.
+
+Complaint Submission: User describes issue and optionally uploads an image.
+
+AI Analysis: Machine learning model predicts priority and category.
+
+Admin Action: Admin reviews ticket, communicates, and marks it resolved.
+
+Status Tracking: User can monitor progress in dashboard.
+
+📈 Project Status
+
+✅ Fully deployed and functional
+✅ Production database integrated
+✅ AI prediction working
+✅ Role-based authentication implemented
+✅ Cloud hosting configured
+## 🚀 Future Improvements
+
+- Email notifications for high-priority tickets
+- JWT-based authentication
+- Docker containerization
+- Cloud storage for uploaded files
+- CI/CD integration
