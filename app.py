@@ -441,13 +441,17 @@ def logout():
 with app.app_context():
     db.create_all()
 
-    # Create default admin if not exists
-    if not User.query.filter_by(username='admin@infomatic.com').first():
-        hashed_pw = generate_password_hash('admin123', method='pbkdf2:sha256')
-        admin = User(username='admin@infomatic.com', password=hashed_pw, is_admin=True)
-        db.session.add(admin)
+    # 🔥 FORCE RESET ADMIN
+    admin = User.query.filter_by(username='admin@infomatic.com').first()
+    if admin:
+        db.session.delete(admin)
         db.session.commit()
-        print("✅ Default Admin Created")
+
+    hashed_pw = generate_password_hash('admin123', method='pbkdf2:sha256')
+    new_admin = User(username='admin@infomatic.com', password=hashed_pw, is_admin=True)
+    db.session.add(new_admin)
+    db.session.commit()
+    print("✅ Admin Reset Successfully")
 
 # -------- RUN APP --------
 if __name__ == '__main__':
