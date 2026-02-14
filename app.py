@@ -12,7 +12,16 @@ from datetime import datetime
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'infomatic_secret_key_123'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///ccms.db'
+# -------- DATABASE CONFIG (Production Safe) --------
+database_url = os.environ.get("DATABASE_URL")
+
+if database_url:
+    if database_url.startswith("postgres://"):
+        database_url = database_url.replace("postgres://", "postgresql://", 1)
+    app.config['SQLALCHEMY_DATABASE_URI'] = database_url
+else:
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///ccms.db'
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # --- CONFIG FOR FILE UPLOADS ---
@@ -22,6 +31,8 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 db = SQLAlchemy(app)
+
+
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
@@ -72,15 +83,7 @@ def load_user(user_id):
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-def create_admin():
-    with app.app_context():
-        db.create_all()
-        if not User.query.filter_by(username='Omkar').first():
-            hashed_pw = generate_password_hash('boss123', method='pbkdf2:sha256')
-            admin = User(username='Omkar', password=hashed_pw, is_admin=True)
-            db.session.add(admin)
-            db.session.commit()
-            print(">>> Admin Account Created: Omkar / boss123")
+
 
 # --- ROUTES ---
 
@@ -434,6 +437,18 @@ def logout():
     logout_user()
     return redirect(url_for('login'))
 
+# -------- SAFE DATABASE INITIALIZATION --------
+with app.app_context():
+    db.create_all()
+
+    # Create default admin if not exists
+    if not User.query.filter_by(username='admin@infomatic.com').first():
+        hashed_pw = generate_password_hash('admin123', method='pbkdf2:sha256')
+        admin = User(username='admin@infomatic.com', password=hashed_pw, is_admin=True)
+        db.session.add(admin)
+        db.session.commit()
+        print("✅ Default Admin Created")
+
+# -------- RUN APP --------
 if __name__ == '__main__':
-    create_admin()
-    app.run(debug=True)
+    app.run()
