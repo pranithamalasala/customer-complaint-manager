@@ -180,8 +180,8 @@ def admin_create_user():
     # Create new user
     hashed_pw = generate_password_hash(password, method='pbkdf2:sha256')
     is_admin = True if role == 'admin' else False
-    
-    new_user = User(username=username, password=hashed_pw, is_admin=is_admin, joined_date=datetime.utcnow())
+    new_user = User(username=username, password=hashed_pw, is_admin=is_admin)
+
     db.session.add(new_user)
     db.session.commit()
     
