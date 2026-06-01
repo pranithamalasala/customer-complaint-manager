@@ -15,9 +15,32 @@
     <div class="col-12 col-lg-5 ms-auto">
         <div class="card-pro p-4 p-md-5">
             <h3 class="fw-bold text-white mb-2">Get Started</h3>
-            <p class="text-light mb-4 small" style="opacity: 0.7;">Create a new employee account.</p>
+<p class="text-light mb-4 small" style="opacity: 0.7;">
+    Create a new employee account.
+</p>
 
-            <form method="POST">
+<div class="alert alert-info mb-3">
+    <h6 class="fw-bold mb-2">Recruiter Demo</h6>
+
+    <p class="mb-2">
+        Explore the Complaint Management System instantly.
+    </p>
+
+    <p class="mb-1">
+        <strong>Email:</strong> demo@infomatic.com
+    </p>
+
+    <p class="mb-3">
+        <strong>Password:</strong> demo123
+    </p>
+
+    <a href="{{ url_for('login') }}" class="btn btn-primary btn-sm">
+        Login as Demo User
+    </a>
+</div>
+
+
+  <form method="POST">
                 <div class="mb-3">
                     <label class="text-light small fw-bold mb-2" style="opacity: 0.8;">OFFICIAL EMAIL</label>
                     <input type="email" 
