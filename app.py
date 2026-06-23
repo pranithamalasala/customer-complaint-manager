@@ -452,6 +452,17 @@ with app.app_context():
     else:
         print("✅ Admin Already Exists")
 
+    # Only create demo user if doesn't exist
+    demo = User.query.filter_by(username='demo@infomatic.com').first()
+    if not demo:
+        hashed_pw = generate_password_hash('demo123', method='pbkdf2:sha256')
+        demo_user = User(username='demo@infomatic.com', password=hashed_pw, is_admin=False)
+        db.session.add(demo_user)
+        db.session.commit()
+        print("✅ Demo User Created")
+    else:
+        print("✅ Demo User Already Exists")
+
 # -------- RUN APP --------
 if __name__ == '__main__':
     app.run()
