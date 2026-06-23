@@ -30,7 +30,7 @@
 
 | Login Page | Submit Ticket | Analytics |
 |:----------:|:-------------:|:---------:|
-| ![Login](./static/screenshots/login.png) | ![Ticket](./static/screenshots/ticket.png) | ![Analytics](./static/screenshots/analytics.png) |
+| ![Login](./static/login.png) | ![Ticket](./static/ticket.png) | ![Analytics](./static/analyticsinfo.png) |
 ---
 
 ## 📌 What is CCMS?
