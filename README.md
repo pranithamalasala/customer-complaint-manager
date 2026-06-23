@@ -28,10 +28,9 @@
 
 ## 📸 Screenshots
 
-| Login Page | Admin Dashboard | File Complaint |
-|:----------:|:---------------:|:--------------:|
-| ![Login](./static/screenshots/login.png) | ![Dashboard](./static/screenshots/dashboard.png) | ![Complaint](./static/screenshots/complaint.png) |
-
+| Login Page | Submit Ticket | Analytics |
+|:----------:|:-------------:|:---------:|
+| ![Login](./static/screenshots/login.png) | ![Ticket](./static/screenshots/ticket.png) | ![Analytics](./static/screenshots/analytics.png) |
 ---
 
 ## 📌 What is CCMS?
